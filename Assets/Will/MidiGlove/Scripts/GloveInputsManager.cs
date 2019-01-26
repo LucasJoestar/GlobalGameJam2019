@@ -12,6 +12,7 @@ public class GloveInputsManager : MonoBehaviour
     public static event Action<bool> OnSecondCombination;
     public static event Action<bool> OnThirdCombination;
     public static event Action<bool> OnFourthCombination;
+    public static event Action<bool> OnFifthCombination;
     #endregion
     #endregion
     #endregion
@@ -85,6 +86,24 @@ public class GloveInputsManager : MonoBehaviour
     //public bool YButton { get { return yButton = Input.GetKey(KeyCode.JoystickButton3); } }
     //#endregion
     #endregion
+    #region FifthCombination
+    #region GetKeyDown
+    [SerializeField, Header("FourthCombination")]
+    bool fifthCombination;
+    public bool FifthCombination { get { return fifthCombination = MidiMaster.GetKeyDown(MidiChannel.Ch1, 57); } }
+    #endregion
+    //#region GetKeyUp
+    //[SerializeField]
+    //bool yButtonUp;
+    //public bool YButtonUp { get { return yButtonUp = Input.GetKeyUp(KeyCode.JoystickButton3); } }
+    //#endregion
+    //#region GetKey
+    //[SerializeField]
+    //bool yButton;
+    //public bool YButton { get { return yButton = Input.GetKey(KeyCode.JoystickButton3); } }
+    //#endregion
+    #endregion
+
     #endregion
     #endregion
     #region otter
@@ -121,6 +140,7 @@ public class GloveInputsManager : MonoBehaviour
         OnSecondCombination = null;
         OnThirdCombination = null;
         OnFourthCombination = null;
+        OnFifthCombination = null;
         #endregion        
         #endregion
         Instance = null;
@@ -142,9 +162,11 @@ public class GloveInputsManager : MonoBehaviour
         #region FourthCombination
         OnFourthCombination?.Invoke(FourthCombination);
         #endregion
+        #region FifthCombination
+        OnFifthCombination?.Invoke(FifthCombination);
+        #endregion
         #endregion
         #endregion
     }
     #endregion
-
 }

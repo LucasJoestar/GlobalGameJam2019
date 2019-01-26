@@ -34,6 +34,13 @@ public class Debuger : MonoBehaviour
         gameObjetToChange.GetComponent<Renderer>().material.color = Color.blue;
     }
 
+    void InputFifth(bool _doIt)
+    {
+        if (!_doIt) return;
+        Debug.Log("Fifth input glove up");
+        gameObjetToChange.GetComponent<Renderer>().material.color = Color.cyan;
+    }
+
     void LeaveGame( )
     {
         Application.Quit();
@@ -46,12 +53,21 @@ public class Debuger : MonoBehaviour
         GloveInputsManager.OnSecondCombination += InputSec;
         GloveInputsManager.OnThirdCombination += InputThird;
         GloveInputsManager.OnFourthCombination += InputFourth;
+        GloveInputsManager.OnFifthCombination += InputFifth;
         #endregion
         #region XboxController
         InputsManager.OnADownInputPress += InputOne;
         InputsManager.OnBDownInputPress += InputSec;
         InputsManager.OnYDownInputPress += InputThird;
         InputsManager.OnXDownInputPress += InputFourth;
+        InputsManager.OnRightBumperDownInputPress += InputFifth;
+        #endregion
+        #region Keyboard
+        InputsManager.OnKBAOneDownInputPress += InputOne;
+        InputsManager.OnKBATwoDownInputPress += InputSec;
+        InputsManager.OnKBAThreeDownInputPress += InputThird;
+        InputsManager.OnKBAFourDownInputPress += InputFourth;
+        InputsManager.OnKBAFiveInputPress += InputFifth;
         #endregion
     }
 

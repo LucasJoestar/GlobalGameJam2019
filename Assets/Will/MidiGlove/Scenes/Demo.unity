@@ -157,6 +157,7 @@ MonoBehaviour:
   secondCombination: 0
   thirdCombination: 0
   fourthCombination: 0
+  fifthCombination: 0
 --- !u!1 &1217746353
 GameObject:
   m_ObjectHideFlags: 0
