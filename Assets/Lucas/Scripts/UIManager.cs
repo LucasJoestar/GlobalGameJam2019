@@ -14,15 +14,13 @@ public class UIManager : MonoBehaviour
     [Header("Canvas & Achors")]
     [SerializeField] private Canvas canvas = null;
     public Canvas Canvas { get { return canvas; } }
-    [SerializeField] private GameObject eventTimerAnchor = null;
 
     [Header("Texts")]
-    [SerializeField] private TextMeshProUGUI timerText = null;
     [SerializeField] private TextMeshProUGUI eventTimerText = null;
 
     [Header("Image")]
     [SerializeField] private Image backgroundImage;
-    [SerializeField] private Image eventTimerImage = null;
+    [SerializeField] private Image timerImage = null;
 
     [Header("Input Field")]
     [SerializeField] private TMP_InputField solutionInputField = null;
@@ -48,15 +46,15 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// Called when an event ends
     /// </summary>
-    private void EventEnd()
+    public void EventEnd()
     {
-        eventTimerAnchor.gameObject.SetActive(false);
+        eventTimerText.gameObject.SetActive(false);
     }
 
     /// <summary>
     /// Called when an event is failed
     /// </summary>
-    private void EventFail()
+    public void EventFail()
     {
         GameObject _failFeedback = Resources.Load("fail") as GameObject;
 
@@ -69,16 +67,16 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// Called when an event starts
     /// </summary>
-    private void EventStart()
+    public void EventStart()
     {
         eventTimerText.text = "0";
-        eventTimerAnchor.gameObject.SetActive(true);
+        eventTimerText.gameObject.SetActive(true);
     }
 
     /// <summary>
     /// Called when an event is achieved with success
     /// </summary>
-    private void EventSuccess()
+    public void EventSuccess()
     {
         GameObject _successFeedback = Resources.Load("success") as GameObject;
 
@@ -89,12 +87,20 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Actives the globl timer
+    /// </summary>
+    public void ActiveTimer()
+    {
+        timerImage.gameObject.SetActive(true);
+    }
+
+    /// <summary>
     /// Update the global timer of the game in UI
     /// </summary>
-    /// <param name="_timerValue">Actual value of the timer</param>
-    private void UpdateTimer(int _timerValue)
+    /// <param name="_timerValue">Actual value of the timer, in percentage</param>
+    public void UpdateTimer(float _timerPercent)
     {
-        timerText.text = _timerValue.ToString();
+        timerImage.fillAmount = _timerPercent;
     }
 
     /// <summary>
@@ -102,17 +108,16 @@ public class UIManager : MonoBehaviour
     /// </summary>
     /// <param name="_eventTimer">Actual value of the event timer</param>
     /// <param name="_eventTimeLimit">Limit of the event timer ; it ends when it reach it</param>
-    private void UpdateEventTimer(float _eventTimer, float _eventTimeLimit)
+    public void UpdateEventTimer(float _eventTimer, float _eventTimeLimit)
     {
         eventTimerText.text = ((int)(_eventTimeLimit - _eventTimer)).ToString();
-        eventTimerImage.fillAmount = 1 - (_eventTimer / _eventTimeLimit);
     }
     #endregion
 
     #region Unity Methods
     private void Awake()
     {
-        if (!timerText || !eventTimerText || !eventTimerImage || !canvas || !solutionInputField)
+        if (!eventTimerText || !timerImage || !canvas || !solutionInputField)
         {
             Debug.Log("Missing UI reference !");
             Destroy(this);
@@ -142,7 +147,7 @@ public class UIManager : MonoBehaviour
         else
         {
             GameManager.Instance.OnTimerUpdate += UpdateTimer;
-            GameManager.Instance.OnEventTimerUpdae += UpdateEventTimer;
+            GameManager.Instance.OnEventTimerUpdate += UpdateEventTimer;
             GameManager.Instance.OnEventEnd += EventEnd;
             GameManager.Instance.OnEventFail += EventFail;
             GameManager.Instance.OnEventStart += EventStart;
@@ -151,7 +156,8 @@ public class UIManager : MonoBehaviour
         // Check the solution when entering it into the input field
         solutionInputField.onEndEdit.AddListener(EnterSolution);
 
-        eventTimerAnchor.gameObject.SetActive(false);
+        timerImage.gameObject.SetActive(false);
+        eventTimerText.gameObject.SetActive(false);
     }
 	
 	// Update is called once per frame

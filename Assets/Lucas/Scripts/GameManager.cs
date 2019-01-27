@@ -6,8 +6,8 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
     #region Events
-    public event Action<int> OnTimerUpdate = null;
-    public event Action<float, float> OnEventTimerUpdae = null;
+    public event Action<float> OnTimerUpdate = null;
+    public event Action<float, float> OnEventTimerUpdate = null;
 
     public event Action OnEventStart = null;
     public event Action OnEventEnd = null;
@@ -29,10 +29,17 @@ public class GameManager : MonoBehaviour
     [Header("Solution")]
     [SerializeField] private string solution = "5";
 
+    [Header("Doors Riddle")]
+    [SerializeField] private GameObject doorsRiddleAnchor = null;
+    [SerializeField] private GameObject doorsRidleSign = null;
+    [SerializeField] private Animator doorsRidleAnim = null;
+
     [Header("State")]
     [SerializeField] private bool isEventActive = false;
     [SerializeField] private bool isGameOver = false;
-    [SerializeField] private bool isGameStarted = false;
+    [SerializeField] private bool isAtDoorsRiddle = false;
+    [SerializeField] private bool isAtBathRiddle = false;
+    [SerializeField] private bool isResolvingDoorsRiddle = false;
 
     [Header("Time")]
     [SerializeField] private float timer = 0;
@@ -44,7 +51,7 @@ public class GameManager : MonoBehaviour
             value = Mathf.Clamp(value, 0, timeLimit);
             timer = value;
 
-            OnTimerUpdate?.Invoke((int)(timeLimit - value));
+            UIManager.Instance?.UpdateTimer(1 - (value / timeLimit));
 
             if (value == 0)
             {
@@ -64,7 +71,7 @@ public class GameManager : MonoBehaviour
             value = Mathf.Clamp(value, 0, eventTimeLimit);
             eventTimer = value;
 
-            OnEventTimerUpdae?.Invoke(value, eventTimeLimit);
+            UIManager.Instance?.UpdateEventTimer(value, eventTimeLimit);
 
             if (value == 0)
             {
@@ -74,6 +81,8 @@ public class GameManager : MonoBehaviour
     }
     [SerializeField] private float eventTimeLimit = 20;
     public float EventTimeLimit { get { return eventTimeLimit; } }
+
+    [SerializeField] private float bathRiddleStartTime = 150;
     #endregion
 
     #region Singleton
@@ -100,6 +109,29 @@ public class GameManager : MonoBehaviour
             Timer -= 20;
             FailEvent();
         }
+    }
+
+    /// <summary>
+    /// Checks the doors riddle
+    /// </summary>
+    private void DoorsRiddle(bool _doInput)
+    {
+        if (!_doInput || !isAtDoorsRiddle || isResolvingDoorsRiddle) return;
+
+        isResolvingDoorsRiddle = true;
+
+        doorsRidleSign.gameObject.SetActive(false);
+        doorsRidleAnim.SetTrigger("Play");
+    }
+
+    /// <summary>
+    /// Resolves the doors riddle
+    /// </summary>
+    public void DoorsRiddleResolve()
+    {
+        isResolvingDoorsRiddle = false;
+        isAtDoorsRiddle = false;
+        Destroy(doorsRiddleAnchor.gameObject);
     }
 
     /// <summary>
@@ -206,11 +238,13 @@ public class GameManager : MonoBehaviour
             Destroy(this);
             return;
         }
+
+        GloveInputsManager.OnFifthCombination += DoorsRiddle;
     }
 
     private void FixedUpdate()
     {
-        if (!isGameOver && !isGameStarted) UpdateTimer();
+        if (!isGameOver && !isAtDoorsRiddle) UpdateTimer();
     }
 
     // Use this for initialization
