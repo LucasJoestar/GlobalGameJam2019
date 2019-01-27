@@ -8,9 +8,10 @@ public class GuitardHeroGM : MonoBehaviour {
     public GameObject[] _note;
 
     int _sucessRaw = 0;
+    public int _winRaw = 10;
 
     bool _noteIsPrint = false;
-
+    bool _waitForInput = false;
     // Use this for initialization
     void Start() {
         foreach(GameObject _element in _note)
@@ -20,12 +21,13 @@ public class GuitardHeroGM : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
-        
-        if (!_noteIsPrint)
+    void FixedUpdate() {  
+        if (!_noteIsPrint && !_waitForInput)
         {
+            CheckWin();
             _note[Reroll()].SetActive(true);
             _noteIsPrint = true;
+            _waitForInput = true;
             Debug.Log(_sucessRaw);
         }
     }
@@ -33,17 +35,26 @@ public class GuitardHeroGM : MonoBehaviour {
     public void SucessNote(){
         _sucessRaw++;
         _noteIsPrint = false;
-        
+        StartCoroutine(WaitForInput());
     }
 
     public void FailNote()
     {
         _sucessRaw = 0;
         _noteIsPrint = false;
+        StartCoroutine(WaitForInput());
+    }
+
+    public void CheckWin()
+    {
+        if (_sucessRaw == _winRaw)
+        {
+
+        }
     }
 
     //Chose a random next tetraminos
-    private int[] m_tetraminosHistory = { 3, 4, 4, 3 };
+    private int[] m_tetraminosHistory = { 3, 4, 3, 4 };
     private int m_nextTetraminos;
     private int m_chosenTetraminos;
 
@@ -78,5 +89,11 @@ public class GuitardHeroGM : MonoBehaviour {
             l_pieceChoisi = Random.Range(0, 5);
 
         return l_pieceChoisi;
+    }
+
+    IEnumerator WaitForInput()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _waitForInput = false;
     }
 }
