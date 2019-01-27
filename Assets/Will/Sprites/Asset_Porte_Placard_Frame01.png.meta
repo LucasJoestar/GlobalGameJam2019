@@ -1,15 +1,9 @@
 fileFormatVersion: 2
-<<<<<<< Updated upstream
 guid: 2dcfbcaf8a20b144abca50c9f700b243
 TextureImporter:
-  fileIDToRecycleName: {}
-=======
-guid: 998b5f742440a114989347425595bcdd
-TextureImporter:
   fileIDToRecycleName:
-    21300000: Porte_0
-    21300002: Porte_1
->>>>>>> Stashed changes
+    21300000: Asset_Porte_Placard_Frame01_0
+    21300002: Asset_Porte_Placard_Frame01_1
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -48,11 +42,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-<<<<<<< Updated upstream
-  spriteMode: 1
-=======
   spriteMode: 2
->>>>>>> Stashed changes
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -92,15 +82,6 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-<<<<<<< Updated upstream
-  spriteSheet:
-    serializedVersion: 2
-    sprites: []
-    outline: []
-    physicsShape: []
-    bones: []
-    spriteID: 
-=======
   - serializedVersion: 2
     buildTarget: Android
     maxTextureSize: 2048
@@ -116,12 +97,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Porte_0
+      name: Asset_Porte_Placard_Frame01_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 792
+        width: 789
         height: 1080
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -130,13 +111,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 602a2d96b4529784b99f33896825c14a
+      spriteID: b013d5507b008d249a5ad6cd6b9b589a
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Porte_1
+      name: Asset_Porte_Placard_Frame01_1
       rect:
         serializedVersion: 2
         x: 1144
@@ -150,7 +131,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4c876303836dc5f449dcf88079fcd3f4
+      spriteID: 6654f41d5b9c75a4c89b6a25ec8bc7d8
       vertices: []
       indices: 
       edges: []
@@ -158,8 +139,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 0a1514c7c6994e24baf0e71ee3b9fb26
->>>>>>> Stashed changes
+    spriteID: 47fd7fd91fdc701488b70eb5d9f6814b
     vertices: []
     indices: 
     edges: []

@@ -16,6 +16,10 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip mainTheme = null;
     [SerializeField] private AudioClip miniGameTheme = null;
 
+    [Header("Feedbacks")]
+    [SerializeField] private AudioClip failFeedback = null;
+    [SerializeField] private AudioClip successFeedback = null;
+
     [Header("Clues")]
     [SerializeField] private AudioClip[] clues = new AudioClip[] { };
 
@@ -33,6 +37,12 @@ public class SoundManager : MonoBehaviour
     #region Methods
 
     #region Original Methods
+    // Plays a bad feedback sound
+    public void PlayFailFeedback()
+    {
+        AudioSource.PlayClipAtPoint(failFeedback, Vector3.zero);
+    }
+
     // Continue playing the main theme from
     public void PlayMainTheme()
     {
@@ -53,6 +63,12 @@ public class SoundManager : MonoBehaviour
     public void PlayMonsterNoise()
     {
         AudioSource.PlayClipAtPoint(monsterNoise, Vector3.zero);
+    }
+
+    // Plays a good feedback sound
+    public void PlaySuccessFeedback()
+    {
+        AudioSource.PlayClipAtPoint(successFeedback, Vector3.zero);
     }
 
     // Plays a random clue
