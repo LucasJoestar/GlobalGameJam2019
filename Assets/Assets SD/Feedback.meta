@@ -1,8 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Assets SD/Feedback.meta
 guid: 07a4725e30d8df840834ac8b56272f07
+=======
+guid: 558b592ff416d2e41b92c9973e7ddebc
+>>>>>>> master:Assets/MidiJack-master/Assets/MidiJack/Plugins/x86.meta
 folderAsset: yes
+timeCreated: 1434849388
+licenseType: Pro
 DefaultImporter:
-  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
