@@ -61,8 +61,8 @@ public class UIManager : MonoBehaviour
 
         if (!_failFeedback) return;
 
-        Instantiate(_failFeedback, canvas.transform, false);
-        Destroy(_failFeedback, .5f);
+        GameObject _feedback = Instantiate(_failFeedback, canvas.transform, false);
+        Destroy(_feedback, 1);
     }
 
     /// <summary>
@@ -83,8 +83,8 @@ public class UIManager : MonoBehaviour
 
         if (!_successFeedback) return;
 
-        Instantiate(_successFeedback, canvas.transform, false);
-        Destroy(_successFeedback, .5f);
+        GameObject _feedback = Instantiate(_successFeedback, canvas.transform, false);
+        Destroy(_feedback, 1);
     }
 
     /// <summary>
