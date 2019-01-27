@@ -112,7 +112,7 @@ public class GuitardHeroGM : MonoBehaviour {
     IEnumerator WaitForInput()
     {
         _waitForInput = true;
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.5f);
         _waitForInput = false;
     }
 }

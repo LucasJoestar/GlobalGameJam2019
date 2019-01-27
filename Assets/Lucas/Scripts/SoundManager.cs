@@ -16,13 +16,11 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip mainTheme = null;
     [SerializeField] private AudioClip miniGameTheme = null;
 
-<<<<<<< Updated upstream
-=======
     [Header("Bath")]
     [SerializeField] private AudioClip bathAmbiance = null;
     [SerializeField] private AudioClip bathResolve = null;
 
->>>>>>> Stashed changes
+
     [Header("Feedbacks")]
     [SerializeField] private AudioClip failFeedback = null;
     [SerializeField] private AudioClip successFeedback = null;
@@ -44,11 +42,6 @@ public class SoundManager : MonoBehaviour
     #region Methods
 
     #region Original Methods
-<<<<<<< Updated upstream
-    // Plays a bad feedback sound
-    public void PlayFailFeedback()
-    {
-=======
     // Plays the bath riddle ambiance
     public void PlayBathAmbiance()
     {
@@ -72,7 +65,6 @@ public class SoundManager : MonoBehaviour
     public void PlayFailFeedback()
     {
         if (!failFeedback) return;
->>>>>>> Stashed changes
         AudioSource.PlayClipAtPoint(failFeedback, Vector3.zero);
     }
 
@@ -102,10 +94,7 @@ public class SoundManager : MonoBehaviour
     // Plays a good feedback sound
     public void PlaySuccessFeedback()
     {
-<<<<<<< Updated upstream
-=======
         if (!successFeedback) return;
->>>>>>> Stashed changes
         AudioSource.PlayClipAtPoint(successFeedback, Vector3.zero);
     }
 

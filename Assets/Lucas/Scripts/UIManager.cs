@@ -14,7 +14,6 @@ public class UIManager : MonoBehaviour
     [Header("Canvas & Achors")]
     [SerializeField] private Canvas canvas = null;
     public Canvas Canvas { get { return canvas; } }
-    [SerializeField] private GameObject timerAnchor = null;
 
     [Header("Texts")]
     [SerializeField] private TextMeshProUGUI eventTimerText = null;
@@ -92,7 +91,7 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void ActiveTimer()
     {
-        timerAnchor.gameObject.SetActive(true);
+        timerImage.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -157,7 +156,7 @@ public class UIManager : MonoBehaviour
         // Check the solution when entering it into the input field
         solutionInputField.onEndEdit.AddListener(EnterSolution);
 
-        timerAnchor.gameObject.SetActive(false);
+        timerImage.gameObject.SetActive(false);
         eventTimerText.gameObject.SetActive(false);
     }
 	
