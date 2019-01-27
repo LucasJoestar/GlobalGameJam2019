@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     [Header("Canvas & Achors")]
     [SerializeField] private Canvas canvas = null;
     public Canvas Canvas { get { return canvas; } }
+    [SerializeField] private GameObject timerAnchor = null;
 
     [Header("Texts")]
     [SerializeField] private TextMeshProUGUI eventTimerText = null;
@@ -60,8 +61,8 @@ public class UIManager : MonoBehaviour
 
         if (!_failFeedback) return;
 
-        Instantiate(_failFeedback, canvas.transform, false);
-        Destroy(_failFeedback, .5f);
+        GameObject _feedback = Instantiate(_failFeedback, canvas.transform, false);
+        Destroy(_feedback, 1);
     }
 
     /// <summary>
@@ -82,8 +83,8 @@ public class UIManager : MonoBehaviour
 
         if (!_successFeedback) return;
 
-        Instantiate(_successFeedback, canvas.transform, false);
-        Destroy(_successFeedback, .5f);
+        GameObject _feedback = Instantiate(_successFeedback, canvas.transform, false);
+        Destroy(_feedback, 1);
     }
 
     /// <summary>
@@ -91,7 +92,7 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void ActiveTimer()
     {
-        timerImage.gameObject.SetActive(true);
+        timerAnchor.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -156,7 +157,7 @@ public class UIManager : MonoBehaviour
         // Check the solution when entering it into the input field
         solutionInputField.onEndEdit.AddListener(EnterSolution);
 
-        timerImage.gameObject.SetActive(false);
+        timerAnchor.gameObject.SetActive(false);
         eventTimerText.gameObject.SetActive(false);
     }
 	

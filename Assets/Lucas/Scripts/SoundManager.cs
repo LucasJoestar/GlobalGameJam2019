@@ -117,6 +117,11 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
     // Use this for initialization
     void Start ()
     {
