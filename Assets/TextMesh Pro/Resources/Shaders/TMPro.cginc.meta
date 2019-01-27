@@ -1,7 +1,15 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
 guid: 407bc68d299748449bbf7f48ee690f8d
 ShaderImporter:
   defaultTextures: []
+=======
+guid: dcadddf2d69a9a64d893afef2ad6d219
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+>>>>>>> Stashed changes
   userData: 
   assetBundleName: 
   assetBundleVariant: 

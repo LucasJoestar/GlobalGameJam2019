@@ -1,9 +1,17 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
 guid: cf81c85f95fe47e1a27f6ae460cf182c
 timeCreated: 1450517184
 licenseType: Pro
 ShaderImporter:
   defaultTextures: []
+=======
+guid: a1bdddb920ba98a478fdebd20da216ea
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+>>>>>>> Stashed changes
   userData: 
   assetBundleName: 
   assetBundleVariant: 
