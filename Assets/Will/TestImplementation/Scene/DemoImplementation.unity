@@ -172,7 +172,7 @@ SpriteRenderer:
   m_Size: {x: 7.92, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &362001571
@@ -404,6 +404,7 @@ MonoBehaviour:
   thirdCombination: 0
   fourthCombination: 0
   fifthCombination: 0
+  sixCombination: 0
 --- !u!4 &1254627422
 Transform:
   m_ObjectHideFlags: 0
@@ -476,7 +477,7 @@ SpriteRenderer:
   m_Size: {x: 7.77, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1510584260
