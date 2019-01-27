@@ -12,8 +12,11 @@ public class GameManager : MonoBehaviour
     public event Action OnEventStart = null;
     public event Action OnEventEnd = null;
 
-    public event Action OnEventSuccess = null;
     public event Action OnEventFail = null;
+    public event Action OnEventSuccess = null;
+
+    public event Action OnEventWin = null;
+    public event Action OnEventLoose = null;
 
     public event Action<bool> OnGameEnd = null;
     #endregion
@@ -21,6 +24,7 @@ public class GameManager : MonoBehaviour
     #region Fields / Properties
     [Header("Events")]
     [SerializeField] private string[] eventNames = new string[] { };
+    [SerializeField] private GuitardHeroGM currentEvent = null;
 
     [Header("Solution")]
     [SerializeField] private string solution = "5";
@@ -28,6 +32,7 @@ public class GameManager : MonoBehaviour
     [Header("State")]
     [SerializeField] private bool isEventActive = false;
     [SerializeField] private bool isGameOver = false;
+    [SerializeField] private bool isGameStarted = false;
 
     [Header("Time")]
     [SerializeField] private float timer = 0;
@@ -69,8 +74,6 @@ public class GameManager : MonoBehaviour
     }
     [SerializeField] private float eventTimeLimit = 20;
     public float EventTimeLimit { get { return eventTimeLimit; } }
-
-    //[SerializeField] private 
     #endregion
 
     #region Singleton
@@ -80,7 +83,10 @@ public class GameManager : MonoBehaviour
     #region Methods
 
     #region Original Methods
-    // Checks the entered solution by the players
+    /// <summary>
+    /// Checks the entered solution by the players
+    /// </summary>
+    /// <param name="_solution"></param>
     private void CheckSolution(string _solution)
     {
         Debug.Log("Solution => " + _solution);
@@ -92,10 +98,39 @@ public class GameManager : MonoBehaviour
         else
         {
             Timer -= 20;
+            FailEvent();
         }
     }
 
-    // Ends the game
+    /// <summary>
+    /// Make an end to an event
+    /// </summary>
+    /// <param name="_isSuccess"></param>
+    public void EndEvent(bool _isSuccess)
+    {
+        isEventActive = false;
+
+        if (_isSuccess) OnEventWin?.Invoke();
+        else OnEventLoose?.Invoke();
+
+        OnEventEnd?.Invoke();
+
+        Destroy(currentEvent);
+    }
+
+    /// <summary>
+    /// Clled when an event part has been failed
+    /// </summary>
+    private void FailEvent()
+    {
+        EventTimer -= 20;
+        OnEventFail?.Invoke();
+    }
+
+    /// <summary>
+    /// Ends the game
+    /// </summary>
+    /// <param name="_isSuccess"></param>
     public void EndGame(bool _isSuccess)
     {
         isGameOver = true;
@@ -103,18 +138,9 @@ public class GameManager : MonoBehaviour
         OnGameEnd?.Invoke(_isSuccess);
     }
 
-    // Make an end to an event
-    public void EndEvent(bool _isSuccess)
-    {
-        isEventActive = false;
-
-        OnEventEnd?.Invoke();
-
-        if (_isSuccess) OnEventSuccess?.Invoke();
-        else OnEventFail?.Invoke();
-    }
-
-    // Starts a random event
+    /// <summary>
+    /// Starts a random event
+    /// </summary>
     private void StartEvent()
     {
         GameObject _event = (GameObject)Resources.Load(eventNames[Random.Range(0, eventNames.Length)]);
@@ -124,15 +150,30 @@ public class GameManager : MonoBehaviour
             Debug.Log("Event not found !");
             return;
         }
-        _event.transform.position = Vector3.zero;
+        currentEvent = Instantiate(_event, UIManager.Instance.Canvas.transform, false).GetComponent<GuitardHeroGM>();
 
+        currentEvent.OnFailMiniGame += FailEvent;
+        currentEvent.OnSuccessMiniGame += SuccessEvent;
+        currentEvent.OnWinMiniGame += () => EndEvent(true);
+
+        eventTimeLimit = currentEvent.gmTime;
         eventTimer = 0;
         isEventActive = true;
 
         OnEventStart?.Invoke();
     }
 
-    // Updates all timer of the game
+    /// <summary>
+    /// Called when an event part is successfully achieved
+    /// </summary>
+    private void SuccessEvent()
+    {
+        OnEventSuccess?.Invoke();
+    }
+
+    /// <summary>
+    /// Updates all timer of the game
+    /// </summary>
     private void UpdateTimer()
     {
         // Update the global timer
@@ -169,7 +210,7 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!isGameOver) UpdateTimer();
+        if (!isGameOver && !isGameStarted) UpdateTimer();
     }
 
     // Use this for initialization

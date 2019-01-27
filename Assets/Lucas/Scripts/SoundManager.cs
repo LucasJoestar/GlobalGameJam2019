@@ -80,6 +80,8 @@ public class SoundManager : MonoBehaviour
         {
             GameManager.Instance.OnEventStart += PlayMiniGameMusic;
             GameManager.Instance.OnEventEnd += PlayMainTheme;
+
+            GameManager.Instance.OnEventSuccess += PlayRandomClue;
         }
 	}
 	

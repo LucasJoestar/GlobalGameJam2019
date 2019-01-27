@@ -1,9 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GuitardHeroGM : MonoBehaviour {
 
+    public event Action OnFailMiniGame = null;
+    public event Action OnSuccessMiniGame = null;
+    public event Action OnWinMiniGame = null;
 
     public GameObject[] _note;
 
@@ -12,8 +17,12 @@ public class GuitardHeroGM : MonoBehaviour {
 
     bool _noteIsPrint = false;
     bool _waitForInput = false;
+
+    public int gmTime = 30;
+
     // Use this for initialization
-    void Start() {
+    void Start()
+    {
         foreach(GameObject _element in _note)
         {
             _element.SetActive(false);
@@ -35,13 +44,16 @@ public class GuitardHeroGM : MonoBehaviour {
     public void SucessNote(){
         _sucessRaw++;
         _noteIsPrint = false;
+
+        OnSuccessMiniGame?.Invoke();
         StartCoroutine(WaitForInput());
     }
 
     public void FailNote()
     {
-        _sucessRaw = 0;
+        //_sucessRaw = 0;
         _noteIsPrint = false;
+        OnFailMiniGame?.Invoke();
         StartCoroutine(WaitForInput());
     }
 
@@ -49,7 +61,7 @@ public class GuitardHeroGM : MonoBehaviour {
     {
         if (_sucessRaw == _winRaw)
         {
-
+            OnWinMiniGame?.Invoke();
         }
     }
 
