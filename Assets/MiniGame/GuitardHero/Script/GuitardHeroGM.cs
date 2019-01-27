@@ -14,6 +14,14 @@ public class GuitardHeroGM : MonoBehaviour {
 
     public int gmTime = 30;
 
+    public static GuitardHeroGM Instance = null;
+
+
+    private void Awake()
+    {
+        if (!Instance)
+            Instance = this;
+    }
     // Use this for initialization
     void Start()
     {

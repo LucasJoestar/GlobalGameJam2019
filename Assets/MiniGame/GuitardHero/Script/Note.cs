@@ -6,6 +6,11 @@ public class Note : MonoBehaviour {
 
     GuitardHeroGM guitardHeroGM;
 
+    public float _noteTimeLife;
+    float _endTime;
+
+    bool _timerStart = false;
+
     //Correspond à l'Input attendu
     [Range(1, 6)]
     public int inputWanted = 1;
@@ -77,8 +82,25 @@ public class Note : MonoBehaviour {
                 Debug.Log("false");
                 guitardHeroGM.FailNote();
             }
+            _timerStart = false;
             _inputSaisi = 0;
             gameObject.SetActive(false);
+        }
+
+        if (!_timerStart)
+        {
+            _timerStart = true;
+            StartTimer();
+        } else
+        {
+            if (Time.time > _endTime)
+            {
+                Debug.Log("false");
+                guitardHeroGM.FailNote();
+                _inputSaisi = 0;
+                _timerStart = false;
+                gameObject.SetActive(false);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Joystick1Button0))
@@ -107,5 +129,10 @@ public class Note : MonoBehaviour {
     {
         yield return new WaitForSeconds(0.1f);
         _justeOneNote = false;
+    }
+
+    public void StartTimer()
+    {
+        _endTime = Time.time + _noteTimeLife;
     }
 }
