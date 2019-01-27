@@ -17,11 +17,21 @@ public class GuitardHeroGM : MonoBehaviour {
     public static GuitardHeroGM Instance = null;
 
 
+<<<<<<< Updated upstream
     private void Awake()
     {
         if (!Instance)
             Instance = this;
     }
+=======
+    public static GuitardHeroGM Instance = null;
+
+    private void Awake()
+    {
+        if (!Instance) Instance = this;
+    }
+
+>>>>>>> Stashed changes
     // Use this for initialization
     void Start()
     {

@@ -23,10 +23,6 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Fields / Properties
-    [Header("Events")]
-    [SerializeField] private string[] eventNames = new string[] { };
-    [SerializeField] private GuitardHeroGM currentEvent = null;
-
     [Header("Solution")]
     [SerializeField] private string solution = "5";
 
@@ -247,20 +243,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void StartEvent()
     {
-        GameObject _event = (GameObject)Resources.Load(eventNames[Random.Range(0, eventNames.Length)]);
-
-        if (!_event)
-        {
-            Debug.Log("Event not found !");
-            return;
-        }
-        currentEvent = Instantiate(_event, UIManager.Instance.Canvas.transform, false).GetComponent<GuitardHeroGM>();
-
-        currentEvent.OnFailMiniGame += FailEvent;
-        currentEvent.OnSuccessMiniGame += SuccessEvent;
-        currentEvent.OnWinMiniGame += () => EndEvent(true);
-
-        eventTimeLimit = currentEvent.gmTime;
+        //eventTimeLimit = currentEvent.gmTime;
         eventTimer = 0;
         isEventActive = true;
 
@@ -348,6 +331,10 @@ public class GameManager : MonoBehaviour
             // Check the solution when entering it into the input field
             UIManager.Instance.SolutionInputField.onEndEdit.AddListener(CheckSolution);
         }
+        //GuitardHeroGM.OnFailMiniGame += FailEvent;
+        //currentEvent.OnSuccessMiniGame += SuccessEvent;
+        //currentEvent.OnWinMiniGame += () => EndEvent(true);
+
         isAtDoorsRiddle = true;
     }
 	
