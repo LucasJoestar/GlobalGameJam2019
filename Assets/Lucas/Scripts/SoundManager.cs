@@ -42,11 +42,6 @@ public class SoundManager : MonoBehaviour
     #region Methods
 
     #region Original Methods
-<<<<<<< Updated upstream
-    // Plays a bad feedback sound
-    public void PlayFailFeedback()
-    {
-=======
     // Plays the bath riddle ambiance
     public void PlayBathAmbiance()
     {
@@ -70,7 +65,6 @@ public class SoundManager : MonoBehaviour
     public void PlayFailFeedback()
     {
         if (!failFeedback) return;
->>>>>>> Stashed changes
         AudioSource.PlayClipAtPoint(failFeedback, Vector3.zero);
     }
 
@@ -100,10 +94,7 @@ public class SoundManager : MonoBehaviour
     // Plays a good feedback sound
     public void PlaySuccessFeedback()
     {
-<<<<<<< Updated upstream
-=======
         if (!successFeedback) return;
->>>>>>> Stashed changes
         AudioSource.PlayClipAtPoint(successFeedback, Vector3.zero);
     }
 

@@ -34,12 +34,18 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject doorsRidleSign = null;
     [SerializeField] private Animator doorsRidleAnim = null;
 
+    [Header("Bath Riddle")]
+    [SerializeField] private GameObject bathRiddleAnchor = null;
+    [SerializeField] private GameObject bathRiddleSign = null;
+    [SerializeField] private Animator bathRiddleAnim = null;
+
     [Header("State")]
     [SerializeField] private bool isEventActive = false;
     [SerializeField] private bool isGameOver = false;
     [SerializeField] private bool isAtDoorsRiddle = false;
     [SerializeField] private bool isAtBathRiddle = false;
     [SerializeField] private bool isResolvingDoorsRiddle = false;
+    [SerializeField] private bool isResolvingBathRiddle = false;
 
     [Header("Time")]
     [SerializeField] private float timer = 0;
@@ -92,6 +98,38 @@ public class GameManager : MonoBehaviour
     #region Methods
 
     #region Original Methods
+    /// <summary>
+    /// Checks the bath riddle
+    /// </summary>
+    private void BathRiddle(bool _doInput)
+    {
+        if (!_doInput || !isAtBathRiddle || isResolvingBathRiddle) return;
+
+        isResolvingBathRiddle = true;
+
+        bathRiddleSign.gameObject.SetActive(false);
+        bathRiddleAnim.SetTrigger("Play");
+    }
+
+    /// <summary>
+    /// Resolves the bath riddle
+    /// </summary>
+    public void BathRiddleResolve()
+    {
+        isResolvingBathRiddle = false;
+        isAtBathRiddle = false;
+        Destroy(bathRiddleAnchor.gameObject);
+    }
+
+    /// <summary>
+    /// Starts the bath riddle
+    /// </summary>
+    public void BathRiddleStart()
+    {
+        isAtDoorsRiddle = true;
+        SoundManager.Instance.PlayBathAmbiance();
+    }
+
     /// <summary>
     /// Checks the entered solution by the players
     /// </summary>
@@ -240,6 +278,12 @@ public class GameManager : MonoBehaviour
         }
 
         GloveInputsManager.OnFifthCombination += DoorsRiddle;
+        InputsManager.OnKBAFiveDownInputPress += DoorsRiddle;
+        InputsManager.OnRightBumperDownInputPress += DoorsRiddle;
+
+        GloveInputsManager.OnSixCombination += (float _value) => DoorsRiddle(_value > .5f);
+        InputsManager.OnKBASixDownInputPress += DoorsRiddle;
+        InputsManager.OnLeftBumperDownInputPress += DoorsRiddle;
     }
 
     private void FixedUpdate()
