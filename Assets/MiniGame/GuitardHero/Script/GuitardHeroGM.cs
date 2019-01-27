@@ -33,12 +33,12 @@ public class GuitardHeroGM : MonoBehaviour {
 
     // Update is called once per frame
     void FixedUpdate() {  
-        if (!_noteIsPrint && !_waitForInput)
+        if (!_noteIsPrint)
         {
             CheckWin();
             _note[Reroll()].SetActive(true);
             _noteIsPrint = true;
-            _waitForInput = true;
+           // _waitForInput = true;
             Debug.Log(_sucessRaw);
         }
     }
@@ -48,14 +48,14 @@ public class GuitardHeroGM : MonoBehaviour {
         _noteIsPrint = false;
 
         OnSuccessMiniGame?.Invoke();
-        StartCoroutine(WaitForInput());
+        //StartCoroutine(WaitForInput());
     }
 
     public void FailNote()
     {
         _noteIsPrint = false;
         OnFailMiniGame?.Invoke();
-        StartCoroutine(WaitForInput());
+       // StartCoroutine(WaitForInput());
     }
 
     public void LooseEvent()

@@ -11,6 +11,7 @@ public class Note : MonoBehaviour {
     public int inputWanted = 1;
     [SerializeField]
     int inputSaisi = 0;
+    bool _justeOneNote = false;
 
     void InputOne(bool _doIt)
     {
@@ -75,9 +76,11 @@ public class Note : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (inputSaisi != 0) {
+        if (inputSaisi != 0 && !_justeOneNote) {
+            _justeOneNote = true;
             Debug.Log(name);
             Debug.Log(inputSaisi);
+            StartCoroutine(WaitBeforeAnotherInput());
             if (inputWanted == inputSaisi)
             {
                 guitardHeroGM.SucessNote();
@@ -89,5 +92,11 @@ public class Note : MonoBehaviour {
             inputSaisi = 0;
             gameObject.SetActive(false);
         }
+    }
+
+    IEnumerator WaitBeforeAnotherInput()
+    {
+        yield return new WaitForSeconds(0.1f);
+        _justeOneNote = false;
     }
 }
