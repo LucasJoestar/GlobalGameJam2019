@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -35,18 +34,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject doorsRidleSign = null;
     [SerializeField] private Animator doorsRidleAnim = null;
 
-    [Header("Bath Riddle")]
-    [SerializeField] private GameObject bathRiddleAnchor = null;
-    [SerializeField] private GameObject bathRiddleSign = null;
-    [SerializeField] private Animator bathRiddleAnim = null;
-
     [Header("State")]
     [SerializeField] private bool isEventActive = false;
     [SerializeField] private bool isGameOver = false;
     [SerializeField] private bool isAtDoorsRiddle = false;
     [SerializeField] private bool isAtBathRiddle = false;
     [SerializeField] private bool isResolvingDoorsRiddle = false;
-    [SerializeField] private bool isResolvingBathRiddle = false;
 
     [Header("Time")]
     [SerializeField] private float timer = 0;
@@ -99,34 +92,6 @@ public class GameManager : MonoBehaviour
     #region Methods
 
     #region Original Methods
-    private void BathRiddle(bool _doInput)
-    {
-        if (!_doInput || !isAtBathRiddle || isResolvingBathRiddle || isGameOver) return;
-
-        isResolvingBathRiddle = true;
-
-        bathRiddleSign.gameObject.SetActive(false);
-        bathRiddleAnim.SetTrigger("Play");
-
-        SoundManager.Instance.PlaySuccessFeedback();
-        SoundManager.Instance.PlayBathResolveSound();
-    }
-
-    public void BathRiddleResolve()
-    {
-        isResolvingBathRiddle = false;
-        isAtBathRiddle = false;
-        Destroy(bathRiddleAnchor.gameObject);
-    }
-
-    private void BathRiddleStart()
-    {
-        isAtBathRiddle = true;
-        bathRiddleAnchor.SetActive(true);
-
-        SoundManager.Instance.PlayBathAmbiance();
-    }
-
     /// <summary>
     /// Checks the entered solution by the players
     /// </summary>
@@ -141,8 +106,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Timer -= 100;
-            UIManager.Instance.EventFail();
+            Timer -= 20;
+            FailEvent();
         }
     }
 
@@ -151,14 +116,12 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void DoorsRiddle(bool _doInput)
     {
-        if (!_doInput || !isAtDoorsRiddle || isResolvingDoorsRiddle || isGameOver) return;
+        if (!_doInput || !isAtDoorsRiddle || isResolvingDoorsRiddle) return;
 
         isResolvingDoorsRiddle = true;
 
         doorsRidleSign.gameObject.SetActive(false);
         doorsRidleAnim.SetTrigger("Play");
-
-        SoundManager.Instance.PlaySuccessFeedback();
     }
 
     /// <summary>
@@ -169,9 +132,6 @@ public class GameManager : MonoBehaviour
         isResolvingDoorsRiddle = false;
         isAtDoorsRiddle = false;
         Destroy(doorsRiddleAnchor.gameObject);
-
-        UIManager.Instance.ActiveTimer();
-        SoundManager.Instance.PlayMonsterNoise();
     }
 
     /// <summary>
@@ -197,7 +157,6 @@ public class GameManager : MonoBehaviour
     {
         EventTimer -= 20;
         OnEventFail?.Invoke();
-        SoundManager.Instance.PlayFailFeedback();
     }
 
     /// <summary>
@@ -209,19 +168,6 @@ public class GameManager : MonoBehaviour
         isGameOver = true;
 
         OnGameEnd?.Invoke(_isSuccess);
-
-        if (_isSuccess) Invoke("LoadGoodEnd", 2);
-        else Invoke("LoadBadEnd", 2);
-    }
-
-    private void LoadBadEnd()
-    {
-        SceneManager.LoadScene(2);
-    }
-
-    private void LoadGoodEnd()
-    {
-        SceneManager.LoadScene(3);
     }
 
     /// <summary>
@@ -255,7 +201,6 @@ public class GameManager : MonoBehaviour
     private void SuccessEvent()
     {
         OnEventSuccess?.Invoke();
-        SoundManager.Instance.PlaySuccessFeedback();
     }
 
     /// <summary>
@@ -277,12 +222,6 @@ public class GameManager : MonoBehaviour
         // Update the event timer
         EventTimer += Time.deltaTime;
 
-        if (eventTimer >= bathRiddleStartTime && bathRiddleAnchor != null)
-        {
-            BathRiddleStart();
-            return;
-        }
-
         if (eventTimer >= eventTimeLimit)
         {
             StartEvent();
@@ -301,12 +240,6 @@ public class GameManager : MonoBehaviour
         }
 
         GloveInputsManager.OnFifthCombination += DoorsRiddle;
-        InputsManager.OnRightBumperDownInputPress += DoorsRiddle;
-        InputsManager.OnKBAFiveDownInputPress += DoorsRiddle;
-
-        GloveInputsManager.OnSixCombination += (float _value) => BathRiddle(_value > 0.5f);
-        InputsManager.OnLeftBumperDownInputPress += BathRiddle;
-        InputsManager.OnKBASixDownInputPress += BathRiddle;
     }
 
     private void FixedUpdate()
@@ -326,8 +259,6 @@ public class GameManager : MonoBehaviour
             // Check the solution when entering it into the input field
             UIManager.Instance.SolutionInputField.onEndEdit.AddListener(CheckSolution);
         }
-
-        isAtDoorsRiddle = true;
     }
 	
 	// Update is called once per frame

@@ -16,13 +16,11 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip mainTheme = null;
     [SerializeField] private AudioClip miniGameTheme = null;
 
-<<<<<<< Updated upstream
-=======
     [Header("Bath")]
     [SerializeField] private AudioClip bathAmbiance = null;
     [SerializeField] private AudioClip bathResolve = null;
 
->>>>>>> Stashed changes
+
     [Header("Feedbacks")]
     [SerializeField] private AudioClip failFeedback = null;
     [SerializeField] private AudioClip successFeedback = null;

@@ -4,46 +4,43 @@ using UnityEngine;
 
 public class Note : MonoBehaviour {
 
-    GuitardHeroGM _guitardHeroGM;
+    GuitardHeroGM guitardHeroGM;
 
     //Correspond à l'Input attendu
     [Range(1, 6)]
-    public int _inputWanted = 1;
+    public int inputWanted = 1;
     [SerializeField]
-    int _inputSaisi = 0;
-
-    public float _timeToPlayNote;
-    float _endOfTime;
-    bool _timerAsStart = false;
+    int inputSaisi = 0;
+    bool _justeOneNote = false;
 
     void InputOne(bool _doIt)
     {
         if (!_doIt) return;
-        _inputSaisi = 1;
+        inputSaisi = 1;
     }
 
     void InputSec(bool _doIt)
     {
         if (!_doIt) return;
-        _inputSaisi = 2;
+        inputSaisi = 2;
     }
 
     void InputThird(bool _doIt)
     {
         if (!_doIt) return;
-        _inputSaisi = 3;
+        inputSaisi = 3;
     }
 
     void InputFourth(bool _doIt)
     {
         if (!_doIt) return;
-        _inputSaisi = 4;
+        inputSaisi = 4;
     }
 
     void InputFifth(bool _doIt)
     {
         if (!_doIt) return;
-        _inputSaisi = 5;
+        inputSaisi = 5;
     }
 
     private void Awake()
@@ -74,65 +71,32 @@ public class Note : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        _guitardHeroGM = GameObject.Find("GuitardHeroGM").GetComponent<GuitardHeroGM>();
+        guitardHeroGM = GameObject.Find("GuitardHeroGM").GetComponent<GuitardHeroGM>();
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (_inputSaisi != 0) {
+        if (inputSaisi != 0 && !_justeOneNote) {
+            _justeOneNote = true;
             Debug.Log(name);
-            Debug.Log(_inputSaisi);
-            if (_inputWanted == _inputSaisi)
+            Debug.Log(inputSaisi);
+            StartCoroutine(WaitBeforeAnotherInput());
+            if (inputWanted == inputSaisi)
             {
-                _guitardHeroGM.SucessNote();
+                guitardHeroGM.SucessNote();
                 
             } else
             {
-                _guitardHeroGM.FailNote();
+                guitardHeroGM.FailNote();
             }
-            _inputSaisi = 0;
+            inputSaisi = 0;
             gameObject.SetActive(false);
         }
-
-        /*if (!_timerAsStart)
-        {
-            StartTimer();
-            _timerAsStart = true;
-        } else
-        {
-            if(Time.time > _endOfTime)
-            {
-                _timerAsStart = false;
-                _inputSaisi = 0;
-                _guitardHeroGM.FailNote();
-                gameObject.SetActive(false);
-            }
-        }
-
-        /*if (Input.GetKeyDown(KeyCode.Joystick1Button0))
-        {
-            _inputSaisi = 1;
-        }
-        if (Input.GetKeyDown(KeyCode.Joystick1Button1))
-        {
-            _inputSaisi = 2;
-        }
-        if (Input.GetKeyDown(KeyCode.Joystick1Button2))
-        {
-            _inputSaisi = 4;
-        }
-        if (Input.GetKeyDown(KeyCode.Joystick1Button3))
-        {
-            _inputSaisi = 3;
-        }
-        if (Input.GetKeyDown(KeyCode.Joystick1Button5))
-        {
-            _inputSaisi = 5;
-        }*/
     }
 
-    void StartTimer()
+    IEnumerator WaitBeforeAnotherInput()
     {
-        _endOfTime = Time.time + _timeToPlayNote;
+        yield return new WaitForSeconds(0.1f);
+        _justeOneNote = false;
     }
 }
