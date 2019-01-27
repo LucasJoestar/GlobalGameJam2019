@@ -27,6 +27,8 @@ public class GuitardHeroGM : MonoBehaviour {
         {
             _element.SetActive(false);
         }
+
+        _winRaw = Random.Range(1, 4);
     }
 
     // Update is called once per frame
@@ -51,10 +53,14 @@ public class GuitardHeroGM : MonoBehaviour {
 
     public void FailNote()
     {
-        //_sucessRaw = 0;
         _noteIsPrint = false;
         OnFailMiniGame?.Invoke();
         StartCoroutine(WaitForInput());
+    }
+
+    public void LooseEvent()
+    {
+        Destroy(gameObject);
     }
 
     public void CheckWin()
@@ -105,6 +111,7 @@ public class GuitardHeroGM : MonoBehaviour {
 
     IEnumerator WaitForInput()
     {
+        _waitForInput = true;
         yield return new WaitForSeconds(0.5f);
         _waitForInput = false;
     }

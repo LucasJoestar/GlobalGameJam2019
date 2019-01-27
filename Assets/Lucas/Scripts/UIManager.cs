@@ -11,9 +11,10 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region Fields / Properties
-    [Header("Canvas")]
+    [Header("Canvas & Achors")]
     [SerializeField] private Canvas canvas = null;
     public Canvas Canvas { get { return canvas; } }
+    [SerializeField] private GameObject eventTimerAnchor = null;
 
     [Header("Texts")]
     [SerializeField] private TextMeshProUGUI timerText = null;
@@ -36,13 +37,20 @@ public class UIManager : MonoBehaviour
 
     #region Original Methods
     /// <summary>
+    /// Called when entering a solution in the input field
+    /// </summary>
+    /// <param name="_solution"></param>
+    private void EnterSolution(string _solution)
+    {
+        solutionInputField.text = string.Empty;
+    }
+
+    /// <summary>
     /// Called when an event ends
     /// </summary>
     private void EventEnd()
     {
-        eventTimerText.text = "0";
-        eventTimerText.gameObject.SetActive(false);
-        eventTimerImage.gameObject.SetActive(false);
+        eventTimerAnchor.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -63,8 +71,8 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void EventStart()
     {
-        eventTimerText.gameObject.SetActive(true);
-        eventTimerImage.gameObject.SetActive(true);
+        eventTimerText.text = "0";
+        eventTimerAnchor.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -84,20 +92,19 @@ public class UIManager : MonoBehaviour
     /// Update the global timer of the game in UI
     /// </summary>
     /// <param name="_timerValue">Actual value of the timer</param>
-    /// <param name="_timeLimit">Limit of the timer ; it ends when it reach it</param>
-    private void UpdateTimer(float _timerValue, int _timeLimit)
+    private void UpdateTimer(int _timerValue)
     {
-        timerText.text = _timeLimit.ToString();
+        timerText.text = _timerValue.ToString();
     }
 
     /// <summary>
     /// Update the actual event timer in UI
     /// </summary>
-    /// <param name="_eventTimer">ctual value of the event timer</param>
+    /// <param name="_eventTimer">Actual value of the event timer</param>
     /// <param name="_eventTimeLimit">Limit of the event timer ; it ends when it reach it</param>
     private void UpdateEventTimer(float _eventTimer, float _eventTimeLimit)
     {
-        eventTimerText.text = _eventTimer.ToString();
+        eventTimerText.text = ((int)(_eventTimeLimit - _eventTimer)).ToString();
         eventTimerImage.fillAmount = 1 - (_eventTimer / _eventTimeLimit);
     }
     #endregion
@@ -141,6 +148,10 @@ public class UIManager : MonoBehaviour
             GameManager.Instance.OnEventStart += EventStart;
             GameManager.Instance.OnEventSuccess += EventSuccess;
         }
+        // Check the solution when entering it into the input field
+        solutionInputField.onEndEdit.AddListener(EnterSolution);
+
+        eventTimerAnchor.gameObject.SetActive(false);
     }
 	
 	// Update is called once per frame
