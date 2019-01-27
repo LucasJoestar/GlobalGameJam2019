@@ -16,6 +16,7 @@ public class Note : MonoBehaviour {
     {
         if (!_doIt) return;
         inputSaisi = 1;
+        Debug.Log("A");
     }
 
     void InputSec(bool _doIt)
@@ -64,7 +65,6 @@ public class Note : MonoBehaviour {
     void Start ()
     {
         guitardHeroGM = GameObject.Find("GuitardHeroGM").GetComponent<GuitardHeroGM>();
-
     }
 	
 	// Update is called once per frame

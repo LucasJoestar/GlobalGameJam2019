@@ -13,12 +13,14 @@ public class UIManager : MonoBehaviour
     #region Fields / Properties
     [Header("Canvas")]
     [SerializeField] private Canvas canvas = null;
+    public Canvas Canvas { get { return canvas; } }
 
     [Header("Texts")]
     [SerializeField] private TextMeshProUGUI timerText = null;
     [SerializeField] private TextMeshProUGUI eventTimerText = null;
-     
+
     [Header("Image")]
+    [SerializeField] private Image backgroundImage;
     [SerializeField] private Image eventTimerImage = null;
 
     [Header("Input Field")]
@@ -33,7 +35,19 @@ public class UIManager : MonoBehaviour
     #region Methods
 
     #region Original Methods
-    // Called when an event is failed
+    /// <summary>
+    /// Called when an event ends
+    /// </summary>
+    private void EventEnd()
+    {
+        eventTimerText.text = "0";
+        eventTimerText.gameObject.SetActive(false);
+        eventTimerImage.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Called when an event is failed
+    /// </summary>
     private void EventFail()
     {
         GameObject _failFeedback = Resources.Load("fail") as GameObject;
@@ -44,7 +58,18 @@ public class UIManager : MonoBehaviour
         Destroy(_failFeedback, .5f);
     }
 
-    // Called when an event is achieved with success
+    /// <summary>
+    /// Called when an event starts
+    /// </summary>
+    private void EventStart()
+    {
+        eventTimerText.gameObject.SetActive(true);
+        eventTimerImage.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// Called when an event is achieved with success
+    /// </summary>
     private void EventSuccess()
     {
         GameObject _successFeedback = Resources.Load("success") as GameObject;
@@ -55,13 +80,21 @@ public class UIManager : MonoBehaviour
         Destroy(_successFeedback, .5f);
     }
 
-    // Update the global timer of the game in UI
+    /// <summary>
+    /// Update the global timer of the game in UI
+    /// </summary>
+    /// <param name="_timerValue">Actual value of the timer</param>
+    /// <param name="_timeLimit">Limit of the timer ; it ends when it reach it</param>
     private void UpdateTimer(float _timerValue, int _timeLimit)
     {
         timerText.text = _timeLimit.ToString();
     }
 
-    // Update the actual event timer in UI
+    /// <summary>
+    /// Update the actual event timer in UI
+    /// </summary>
+    /// <param name="_eventTimer">ctual value of the event timer</param>
+    /// <param name="_eventTimeLimit">Limit of the event timer ; it ends when it reach it</param>
     private void UpdateEventTimer(float _eventTimer, float _eventTimeLimit)
     {
         eventTimerText.text = _eventTimer.ToString();
@@ -103,7 +136,9 @@ public class UIManager : MonoBehaviour
         {
             GameManager.Instance.OnTimerUpdate += UpdateTimer;
             GameManager.Instance.OnEventTimerUpdae += UpdateEventTimer;
+            GameManager.Instance.OnEventEnd += EventEnd;
             GameManager.Instance.OnEventFail += EventFail;
+            GameManager.Instance.OnEventStart += EventStart;
             GameManager.Instance.OnEventSuccess += EventSuccess;
         }
     }
