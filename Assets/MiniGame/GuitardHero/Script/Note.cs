@@ -4,9 +4,43 @@ using UnityEngine;
 
 public class Note : MonoBehaviour {
 
-    public GameObject Image;
+    GuitardHeroGM guitardHeroGM;
 
-    public int numInput = 0;
+    //Correspond à l'Input attendu
+    [Range(1, 6)]
+    public int inputWanted = 1;
+    [SerializeField]
+    int inputSaisi = 0;
+
+    void InputOne(bool _doIt)
+    {
+        if (!_doIt) return;
+        inputSaisi = 1;
+    }
+
+    void InputSec(bool _doIt)
+    {
+        if (!_doIt) return;
+        inputSaisi = 2;
+    }
+
+    void InputThird(bool _doIt)
+    {
+        if (!_doIt) return;
+        inputSaisi = 3;
+    }
+
+    void InputFourth(bool _doIt)
+    {
+        if (!_doIt) return;
+        inputSaisi = 4;
+    }
+
+    void InputFifth(bool _doIt)
+    {
+        if (!_doIt) return;
+        inputSaisi = 5;
+    }
 
     private void Awake()
     {
@@ -27,47 +61,25 @@ public class Note : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start () {
-		
-	}
+    void Start ()
+    {
+        guitardHeroGM = GameObject.Find("GuitardHeroGM").GetComponent<GuitardHeroGM>();
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
-
-    void InputOne(bool _doIt)
-    {
-        if (!_doIt) return;
-        Debug.Log("First input glove up");
-        gameObjetToChange.GetComponent<Renderer>().material.color = Color.green;
-    }
-
-    void InputSec(bool _doIt)
-    {
-        if (!_doIt) return;
-        Debug.Log("Sec input glove up");
-        gameObjetToChange.GetComponent<Renderer>().material.color = Color.yellow;
-    }
-
-    void InputThird(bool _doIt)
-    {
-        if (!_doIt) return;
-        Debug.Log("Third input glove up");
-        gameObjetToChange.GetComponent<Renderer>().material.color = Color.black;
-    }
-
-    void InputFourth(bool _doIt)
-    {
-        if (!_doIt) return;
-        Debug.Log("Fourth input glove up");
-        gameObjetToChange.GetComponent<Renderer>().material.color = Color.blue;
-    }
-
-    void InputFifth(bool _doIt)
-    {
-        if (!_doIt) return;
-        Debug.Log("Fifth input glove up");
-        gameObjetToChange.GetComponent<Renderer>().material.color = Color.cyan;
+        if (inputSaisi != 0) {
+            if (inputWanted == inputSaisi)
+            {
+                guitardHeroGM.SucessNote();
+                
+            } else
+            {
+                guitardHeroGM.FailNote();
+            }
+            inputSaisi = 0;
+            gameObject.SetActive(false);
+        }
     }
 }
