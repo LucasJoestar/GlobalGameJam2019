@@ -4,8 +4,9 @@ public class Debuger : MonoBehaviour
 {
     [SerializeField,Header("Object Settings")]
     Renderer gameObjetToChange;
+    [SerializeField]
+    Transform transformToUpdate;
 
-    
     void InputOne(bool _doIt)
     {
         if (!_doIt) return;
@@ -41,6 +42,12 @@ public class Debuger : MonoBehaviour
         gameObjetToChange.GetComponent<Renderer>().material.color = Color.cyan;
     }
 
+    void InputSix(float _value)
+    {
+        if (!transformToUpdate) return;
+        Debug.Log(_value);        
+    }
+
     void LeaveGame( )
     {
         Application.Quit();
@@ -54,6 +61,7 @@ public class Debuger : MonoBehaviour
         GloveInputsManager.OnThirdCombination += InputThird;
         GloveInputsManager.OnFourthCombination += InputFourth;
         GloveInputsManager.OnFifthCombination += InputFifth;
+        GloveInputsManager.OnSixCombination += InputSix;
         #endregion
         #region XboxController
         InputsManager.OnADownInputPress += InputOne;
@@ -75,6 +83,8 @@ public class Debuger : MonoBehaviour
     {
         if(!gameObjetToChange)
         gameObjetToChange = gameObject.GetComponent<Renderer>();
+        if (!transformToUpdate)
+            transformToUpdate = gameObject.GetComponent<Transform>();
     }
 
     private void Update()
