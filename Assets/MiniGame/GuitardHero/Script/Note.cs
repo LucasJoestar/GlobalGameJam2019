@@ -16,7 +16,6 @@ public class Note : MonoBehaviour {
     {
         if (!_doIt) return;
         inputSaisi = 1;
-        Debug.Log("A");
     }
 
     void InputSec(bool _doIt)
@@ -59,6 +58,13 @@ public class Note : MonoBehaviour {
         InputsManager.OnXDownInputPress += InputFourth;
         InputsManager.OnRightBumperDownInputPress += InputFifth;
         #endregion
+        #region Keyboard
+        InputsManager.OnKBQDownInputPress += InputOne;
+        InputsManager.OnKBEDownInputPress += InputSec;
+        InputsManager.OnKBADownInputPress += InputThird;
+        InputsManager.OnKBXDownInputPress += InputFourth;
+        InputsManager.OnKBFDownInputPress += InputFifth;
+        #endregion
     }
 
     // Use this for initialization
@@ -70,6 +76,8 @@ public class Note : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (inputSaisi != 0) {
+            Debug.Log(name);
+            Debug.Log(inputSaisi);
             if (inputWanted == inputSaisi)
             {
                 guitardHeroGM.SucessNote();

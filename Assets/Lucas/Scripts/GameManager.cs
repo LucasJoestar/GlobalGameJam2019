@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
     #region Events
-    public event Action<float, int> OnTimerUpdate = null;
+    public event Action<int> OnTimerUpdate = null;
     public event Action<float, float> OnEventTimerUpdae = null;
 
     public event Action OnEventStart = null;
@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
             value = Mathf.Clamp(value, 0, timeLimit);
             timer = value;
 
-            OnTimerUpdate?.Invoke(value, timeLimit);
+            OnTimerUpdate?.Invoke((int)(timeLimit - value));
 
             if (value == 0)
             {
@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour
 
         OnEventEnd?.Invoke();
 
-        Destroy(currentEvent);
+        currentEvent.LooseEvent();
     }
 
     /// <summary>
@@ -185,7 +185,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (isEventActive) return;
+        if (!isEventActive) return;
 
         // Update the event timer
         EventTimer += Time.deltaTime;
