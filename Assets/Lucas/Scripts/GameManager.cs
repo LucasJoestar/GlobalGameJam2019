@@ -160,6 +160,8 @@ public class GameManager : MonoBehaviour
 
         doorsRidleSign.gameObject.SetActive(false);
         doorsRidleAnim.SetTrigger("Play");
+
+        SoundManager.Instance.PlaySuccessFeedback();
     }
 
     /// <summary>
@@ -170,6 +172,9 @@ public class GameManager : MonoBehaviour
         isResolvingDoorsRiddle = false;
         isAtDoorsRiddle = false;
         Destroy(doorsRiddleAnchor.gameObject);
+
+        SoundManager.Instance.PlayMonsterNoise();
+        UIManager.Instance.ActiveTimer();
     }
 
     /// <summary>
@@ -303,6 +308,7 @@ public class GameManager : MonoBehaviour
             // Check the solution when entering it into the input field
             UIManager.Instance.SolutionInputField.onEndEdit.AddListener(CheckSolution);
         }
+        isAtDoorsRiddle = true;
     }
 	
 	// Update is called once per frame
