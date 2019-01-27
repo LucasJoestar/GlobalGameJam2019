@@ -13,6 +13,7 @@ public class GloveInputsManager : MonoBehaviour
     public static event Action<bool> OnThirdCombination;
     public static event Action<bool> OnFourthCombination;
     public static event Action<bool> OnFifthCombination;
+    public static event Action<float> OnSixCombination;
     #endregion
     #endregion
     #endregion
@@ -103,7 +104,13 @@ public class GloveInputsManager : MonoBehaviour
     //public bool YButton { get { return yButton = Input.GetKey(KeyCode.JoystickButton3); } }
     //#endregion
     #endregion
-
+    #region SixCombination
+    #region GetKeyDown
+    [SerializeField, Header("SixCombination")]
+    float sixCombination;
+    public float SixCombination { get { return sixCombination = MidiMaster.GetKnob(MidiChannel.Ch1,1); } }
+    #endregion
+    #endregion
     #endregion
     #endregion
     #region otter
@@ -164,6 +171,9 @@ public class GloveInputsManager : MonoBehaviour
         #endregion
         #region FifthCombination
         OnFifthCombination?.Invoke(FifthCombination);
+        #endregion
+        #region SixCombination
+        OnSixCombination?.Invoke(SixCombination);
         #endregion
         #endregion
         #endregion
