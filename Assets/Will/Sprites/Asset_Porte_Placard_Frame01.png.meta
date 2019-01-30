@@ -2,7 +2,7 @@ fileFormatVersion: 2
 guid: 2dcfbcaf8a20b144abca50c9f700b243
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Asset_Porte_Placard_Frame01_0
+    21300000: DoorLeft
     21300002: Asset_Porte_Placard_Frame01_1
   externalObjects: {}
   serializedVersion: 7
@@ -82,29 +82,36 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
+  - serializedVersion: 2
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Asset_Porte_Placard_Frame01_0
+      name: DoorLeft
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-<<<<<<< Updated upstream
-        width: 821
-=======
-        width: 791
->>>>>>> Stashed changes
+        width: 795
         height: 1080
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0617460d4b3a1794f9b4f8cc76a0b467
+      spriteID: ce8c093f64f20fc4b838e5b7f89fd2d6
       vertices: []
       indices: 
       edges: []
@@ -118,13 +125,13 @@ TextureImporter:
         width: 776
         height: 1080
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5dcc780bf46b4f14cb631a64fa49b131
+      spriteID: 2dce51a1682044b4abca0153608ac867
       vertices: []
       indices: 
       edges: []
@@ -132,7 +139,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 78b8d71bea6831e4b987c0ea6339d1b0
+    spriteID: 0c7cbecc505d9654d8b74c550e7fdeeb
     vertices: []
     indices: 
     edges: []
