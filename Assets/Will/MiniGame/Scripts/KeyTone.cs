@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class KeyTone : MonoBehaviour
 {
@@ -23,16 +21,16 @@ public class KeyTone : MonoBehaviour
     {
         if (inputValue != 0 && !justeOneTone)
         {
-            Debug.Log(name);
-            Debug.Log(inputValue);
+            //Debug.Log(name);
+            //Debug.Log(inputValue);
             if (inputWanted == inputValue)
             {
-                Debug.Log("true");
+                //Debug.Log("true");
                 Instance.SucessNote();
             }
             else
             {
-                Debug.Log("false");
+                //Debug.Log("false");
                 Instance.FailNote();
             }
             timerStart = false;
@@ -45,31 +43,31 @@ public class KeyTone : MonoBehaviour
     void FirstInput(bool _doIt)
     {
         if (!_doIt) return;
-        Debug.Log("Input 1");
+        //Debug.Log("Input 1");
         inputValue = 1;
     }
     void SecondInput(bool _doIt)
     {
         if (!_doIt) return;
-        Debug.Log("Input 2");
+        //Debug.Log("Input 2");
         inputValue = 2;
     }
     void ThirdInput(bool _doIt)
     {
         if (!_doIt) return;
-        Debug.Log("Input 3");
+        //Debug.Log("Input 3");
         inputValue = 3;
     }
     void FourthInput(bool _doIt)
     {
         if (!_doIt) return;
-        Debug.Log("Input 4");
+        //Debug.Log("Input 4");
         inputValue = 4;
     }
     void FifthInput(bool _doIt)
     {
         if (!_doIt) return;
-        Debug.Log("Input 5");
+        //Debug.Log("Input 5");
         inputValue = 5;
     }
     #endregion
@@ -121,7 +119,7 @@ public class KeyTone : MonoBehaviour
         {
             if (Time.time > timeIsUp)
             {
-                Debug.Log("false");
+                //Debug.Log("false");
                 Instance.FailNote();
                 inputValue = 0;
                 timerStart = false;
