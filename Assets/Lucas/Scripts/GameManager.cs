@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections; 
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -35,6 +36,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject bathRiddleAnchor = null;
     [SerializeField] private GameObject bathRiddleSign = null;
     [SerializeField] private Animator bathRiddleAnim = null;
+
+    [Header ("KeyGlyph State")]
+    [SerializeField]
+     GameObject KeyGlyphAnchor = null;
+    [SerializeField]
+    Animator keyGlyphAnimator = null;
 
     [Header("State")]
     [SerializeField] private bool isEventActive = false;
@@ -84,6 +91,18 @@ public class GameManager : MonoBehaviour
     }
     [SerializeField] private float eventTimeLimit = 20;
     public float EventTimeLimit { get { return eventTimeLimit; } }
+
+    [SerializeField] private float eventInterval = 15;
+    [SerializeField] private float eventIntervalTimer = 0;
+    public float EventIntervalTimer
+    {
+        get { return eventIntervalTimer; }
+        set
+        {
+            value = Mathf.Clamp(value, 0, eventInterval);
+            eventIntervalTimer = value;
+        }
+    }
 
     [SerializeField] private float bathRiddleStartTime = 150;
     #endregion
@@ -169,7 +188,7 @@ public class GameManager : MonoBehaviour
     {
         isResolvingDoorsRiddle = false;
         isAtDoorsRiddle = false;
-        Destroy(doorsRiddleAnchor.gameObject);
+        Destroy(KeyGlyphAnchor.gameObject);
 
         SoundManager.Instance.PlayMonsterNoise();
         UIManager.Instance.ActiveTimer();
@@ -190,7 +209,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            FailEvent();
+            //FailEvent();
             OnEventLoose?.Invoke();
         }
 
@@ -228,6 +247,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void KeyGlyphStage()
+    {
+        Destroy(doorsRiddleAnchor.gameObject);
+        KeyGlyphAnchor.SetActive(true);
+        keyGlyphAnimator.SetTrigger("Play");
+    }
+
     private void LoadBadEnd()
     {
         SceneManager.LoadScene(2);
@@ -243,11 +269,13 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void StartEvent()
     {
-        //eventTimeLimit = currentEvent.gmTime;
-        eventTimer = 0;
+        EventIntervalTimer = 0;
+        eventTimeLimit = 4;//////
+        StartCoroutine(StartEventTimer()); 
+        //eventTimer = 0;
         isEventActive = true;
-
         OnEventStart?.Invoke();
+        GuitardHeroGM.Instance.SetNote();
     }
 
     /// <summary>
@@ -278,15 +306,32 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (!isEventActive) return;
+        if (!isAtBathRiddle && !isAtDoorsRiddle)
+        {
+            EventIntervalTimer += Time.deltaTime;
+            if (eventIntervalTimer >= eventInterval)
+            {
+                StartEvent();
+            }
+        }
 
+        if (!isEventActive) return;
+        /*
         // Update the event timer
         EventTimer += Time.deltaTime;
 
         if (eventTimer >= eventTimeLimit)
         {
-            StartEvent();
+            EndEvent(false);
         }
+        */
+    }
+
+    private IEnumerator StartEventTimer()
+    {
+        yield return new WaitForSeconds(EventTimeLimit);
+        EndEvent(false);
+        StartCoroutine(StartEventTimer()); 
     }
     #endregion
 
@@ -335,6 +380,8 @@ public class GameManager : MonoBehaviour
         //currentEvent.OnSuccessMiniGame += SuccessEvent;
         //currentEvent.OnWinMiniGame += () => EndEvent(true);
 
+        GuitardHeroGM.Instance.OnFailMiniGame += () => EndEvent(false);
+        GuitardHeroGM.Instance.OnSuccessMiniGame += () => EndEvent(true);
         isAtDoorsRiddle = true;
     }
 	

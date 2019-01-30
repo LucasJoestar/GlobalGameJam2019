@@ -45,7 +45,15 @@ public class Debuger : MonoBehaviour
     void InputSix(float _value)
     {
         if (!transformToUpdate) return;
-        Debug.Log(_value);        
+        //Debug.Log(_value);        
+    }
+
+    void InputSeven(bool _doIt)
+    {
+        if (!_doIt) return;
+        Debug.Log("Input seven");
+        gameObjetToChange.GetComponent<Renderer>().material.color = Color.magenta;
+        
     }
 
     void LeaveGame( )
@@ -62,6 +70,8 @@ public class Debuger : MonoBehaviour
         GloveInputsManager.OnFourthCombination += InputFourth;
         GloveInputsManager.OnFifthCombination += InputFifth;
         GloveInputsManager.OnSixCombination += InputSix;
+        GloveInputsManager.OnSevenCombination += InputSeven; 
+
         #endregion
         #region XboxController
         InputsManager.OnADownInputPress += InputOne;

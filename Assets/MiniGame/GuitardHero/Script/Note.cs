@@ -6,7 +6,7 @@ public class Note : MonoBehaviour {
 
     GuitardHeroGM guitardHeroGM;
 
-    public float _noteTimeLife;
+    public float _noteTimeLife = 7;
     float _endTime;
 
     bool _timerStart = false;
@@ -50,28 +50,42 @@ public class Note : MonoBehaviour {
 
     private void Awake()
     {
-        #region Glove
+        #region Keyboard
+        InputsManager.OnKBAOneDownInputPress += InputOne;
+        InputsManager.OnKBATwoDownInputPress += InputSec;
+        InputsManager.OnKBAThreeDownInputPress += InputThird;
+        InputsManager.OnKBAFourDownInputPress += InputFourth;
+        InputsManager.OnKBAFiveDownInputPress += InputFifth;
+        #endregion
+        #region MidiGlove
         GloveInputsManager.OnFirstCombination += InputOne;
         GloveInputsManager.OnSecondCombination += InputSec;
         GloveInputsManager.OnThirdCombination += InputThird;
         GloveInputsManager.OnFourthCombination += InputFourth;
         GloveInputsManager.OnFifthCombination += InputFifth;
         #endregion
+        #region XboxController
+        InputsManager.OnADownInputPress += InputOne;
+        InputsManager.OnBDownInputPress += InputSec;
+        InputsManager.OnYDownInputPress += InputThird;
+        InputsManager.OnXDownInputPress += InputFourth;
+        InputsManager.OnRightBumperDownInputPress += InputFifth;
+        #endregion
     }
 
     // Use this for initialization
     void Start ()
     {
-        guitardHeroGM = GameObject.Find("GuitardHeroGM").GetComponent<GuitardHeroGM>();
+        if (!guitardHeroGM) guitardHeroGM = GuitardHeroGM.Instance;
     }
 	
 	// Update is called once per frame
 	void Update () {
         if (_inputSaisi != 0 && !_justeOneNote) {
-            _justeOneNote = true;
+            //_justeOneNote = true;
             Debug.Log(name);
             Debug.Log(_inputSaisi);
-            StartCoroutine(WaitBeforeAnotherInput());
+            //StartCoroutine(WaitBeforeAnotherInput());
             if (inputWanted == _inputSaisi)
             {
                 Debug.Log("true");

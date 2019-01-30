@@ -78,7 +78,7 @@ GameObject:
   - component: {fileID: 114532251805205500}
   - component: {fileID: 114572847252545372}
   m_Layer: 5
-  m_Name: Input_Evenement
+  m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -158,6 +158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cef83deca356bc14681f52fca4d0afbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _noteTimeLife: 0
   inputWanted: 2
   _inputSaisi: 0
 --- !u!114 &114261568722368626
@@ -171,6 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cef83deca356bc14681f52fca4d0afbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _noteTimeLife: 0
   inputWanted: 5
   _inputSaisi: 0
 --- !u!114 &114284312603379306
@@ -184,6 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cef83deca356bc14681f52fca4d0afbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _noteTimeLife: 0
   inputWanted: 1
   _inputSaisi: 0
 --- !u!114 &114301872304503634
@@ -224,6 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cef83deca356bc14681f52fca4d0afbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _noteTimeLife: 0
   inputWanted: 4
   _inputSaisi: 0
 --- !u!114 &114415174640499690
@@ -319,6 +323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cef83deca356bc14681f52fca4d0afbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _noteTimeLife: 0
   inputWanted: 3
   _inputSaisi: 0
 --- !u!114 &114774314857145006

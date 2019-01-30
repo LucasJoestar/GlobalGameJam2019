@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+<<<<<<< Updated upstream:Assets/Will/Animation/DoorAnimation.anim.meta
+guid: 4ab327ea4f1db3847ae7acfc06cc07db
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+=======
+guid: 50c001878bf35aa4e8b0f2b239751b9b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+>>>>>>> Stashed changes:Assets/Animations/SignBath.anim.meta
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

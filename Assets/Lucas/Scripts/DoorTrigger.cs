@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DoorTrigger : MonoBehaviour
-{
-    public void EndDoorsRiddle()
+{    
+    public void EndKeyGlyph()
     {
-        GameManager.Instance.DoorsRiddleResolve();
+        GameManager.Instance.KeyGlyphStage();
     }
 }
