@@ -15,7 +15,7 @@ using UnityEngine;
  * RightTrigger as 12th axis
  * LeftTrigger  as 13th axis
  */
-
+#pragma warning disable 0414
 public class AndroidInputsManager : MonoBehaviour
 {
     #region F/P
