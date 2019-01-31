@@ -2,6 +2,7 @@
 using UnityEngine;
 using MidiJack;
 
+#pragma warning disable 0414
 public class GloveInputsManager : MonoBehaviour
 {
     #region F/P

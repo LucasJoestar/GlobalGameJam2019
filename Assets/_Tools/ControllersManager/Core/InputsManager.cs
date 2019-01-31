@@ -15,7 +15,7 @@ using UnityEngine;
  * RightTrigger as 10th axis
  * LeftTrigger  as 9th axis
  */
-
+#pragma warning disable 0414
 public class InputsManager : MonoBehaviour
 {
     #region F/P
@@ -748,6 +748,18 @@ public class InputsManager : MonoBehaviour
     public static event Action<bool> OnEscapeClickUpInputPress;
     #endregion
     #endregion
+    #region Space
+    #region GetKey
+    public static event Action<bool> OnSpaceClickInputPress;
+    #endregion
+    #region GetKeyDown
+    public static event Action<bool> OnSpaceClickDownInputPress;
+    #endregion
+    #region GetKeyUp
+    public static event Action<bool> OnSpaceClickUpInputPress;
+    #endregion
+    #endregion
+
     #endregion
     #endregion
     #endregion
@@ -1891,6 +1903,24 @@ public class InputsManager : MonoBehaviour
     public bool EscapeUp { get { return escapeUp = Input.GetKeyUp(KeyCode.Escape); } }
     #endregion
     #endregion
+    #region Space
+    #region GetKey
+    [SerializeField, Header("Space")]
+    bool space;
+    public bool Space { get { return space = Input.GetKey(KeyCode.Space); } }
+    #endregion
+    #region GetKeyDown
+    [SerializeField, Header("Space Down")]
+    bool spaceDown;
+    public bool SpaceDown { get { return spaceDown = Input.GetKeyDown(KeyCode.Space); } }
+    #endregion
+    #region GetKeyUp
+    [SerializeField, Header("Space Up")]
+    bool spaceUp;
+    public bool SpaceUp { get { return spaceUp = Input.GetKeyUp(KeyCode.Space); } }
+    #endregion
+    #endregion
+
     #endregion
     #endregion
     #endregion
@@ -2615,6 +2645,18 @@ public class InputsManager : MonoBehaviour
         OnEscapeClickUpInputPress = null;
         #endregion
         #endregion
+        #region Space
+        #region GetKey
+        OnSpaceClickInputPress = null;
+        #endregion
+        #region GetKeyDown
+        OnSpaceClickDownInputPress = null;
+        #endregion
+        #region GetKeyUp
+        OnSpaceClickUpInputPress = null;
+        #endregion
+        #endregion
+
         #endregion
         #endregion
         #region Buttons mouse
@@ -3380,6 +3422,18 @@ public class InputsManager : MonoBehaviour
         OnEscapeClickUpInputPress?.Invoke(EscapeUp);
         #endregion
         #endregion
+        #region Escape
+        #region GetKey
+        OnSpaceClickInputPress?.Invoke(Space);
+        #endregion
+        #region GetKeyDown
+        OnSpaceClickDownInputPress?.Invoke(SpaceDown);
+        #endregion
+        #region GetKeyUp
+        OnSpaceClickUpInputPress?.Invoke(SpaceUp);
+        #endregion
+        #endregion
+
         #endregion
         #endregion
         #endregion
