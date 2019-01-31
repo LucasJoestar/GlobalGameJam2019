@@ -69,8 +69,11 @@ public class GuitardHeroGM : MonoBehaviour
         return l_pieceChoisi;
     }
 
-    public void SetNote()
+    public int SetNote()
     {
-        _note[Reroll()].SetActive(true);
+        int _id = Reroll();
+        _note[_id].SetActive(true);
+
+        return _id;
     }
 }

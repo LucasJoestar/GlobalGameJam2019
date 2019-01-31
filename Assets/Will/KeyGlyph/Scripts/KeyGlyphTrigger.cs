@@ -4,6 +4,6 @@ public class KeyGlyphTrigger : MonoBehaviour
 {
     public void EndDoorsRiddle()
     {
-        GameManager.Instance.DoorsRiddleResolve();
+        //GameManager.Instance.DoorsRiddleResolve();
     }
 }

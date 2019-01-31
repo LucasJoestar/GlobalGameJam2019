@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    #region Events
-
-    #endregion
-
     #region Fields / Properties
     [Header("Audio Source")]
     [SerializeField] private AudioSource audioSource = null;
@@ -125,13 +121,7 @@ public class SoundManager : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-		if (GameManager.Instance)
-        {
-            GameManager.Instance.OnEventStart += PlayMiniGameMusic;
-            GameManager.Instance.OnEventEnd += PlayMainTheme;
 
-            GameManager.Instance.OnEventSuccess += PlayRandomClue;
-        }
 	}
 	
 	// Update is called once per frame
