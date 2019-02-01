@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Help Resources")]
     // Remaining chances to find the game solution
-    [SerializeField] private int remainingChances = 1;
+    [SerializeField] private int remainingChances = 2;
     // Remaining chances to see the glove movements clues
     [SerializeField] private int remainingCluesVisiblity = 1;
 
@@ -80,18 +80,6 @@ public class GameManager : MonoBehaviour
     private IEnumerator BathroomPhase()
     {
         bool _isGood = false;
-        GloveInputsManager.OnSixCombination += (float _isReallyGood) => _isGood = _isReallyGood > .5f;
-
-        while (!_isGood)
-        {
-            yield return null;
-        }
-
-        _isGood = false;
-        GloveInputsManager.OnSixCombination -= (float _isReallyGood) => _isGood = _isReallyGood > .5f;
-
-        OnLightOn?.Invoke();
-
         GloveInputsManager.OnSevenCombination += (bool _isReallyGood) => _isGood = _isReallyGood;
 
         while (!_isGood)
@@ -99,7 +87,20 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
 
+        _isGood = false;
+
         GloveInputsManager.OnSevenCombination -= (bool _isReallyGood) => _isGood = _isReallyGood;
+
+        OnLightOn?.Invoke();
+
+        GloveInputsManager.OnSixCombination += (float _isReallyGood) => _isGood = _isReallyGood > .5f;
+
+        while (!_isGood)
+        {
+            yield return null;
+        }
+
+        GloveInputsManager.OnSixCombination -= (float _isReallyGood) => _isGood = _isReallyGood > .5f;
 
         OnSinkOutlet?.Invoke();
     }
@@ -113,7 +114,6 @@ public class GameManager : MonoBehaviour
         while (!_isGood)
         {
             yield return null;
-            Debug.Log("No homo");
         }
 
         GloveInputsManager.OnFifthCombination -= (bool _isReallyGood) => _isGood = _isReallyGood;
@@ -187,6 +187,8 @@ public class GameManager : MonoBehaviour
         if (simonTimerCoroutine != null) StopCoroutine(simonTimerCoroutine);
         UIManager.Instance.ActiveTimer(false);
 
+        if (remainingCluesVisiblity == 0) GloveInputsManager.OnEightCombination -= (bool _isActive) => { if (_isActive) PauseSimon(); };
+
         yield return new WaitForSeconds(2);
 
         // Active the guess what one phase
@@ -199,8 +201,16 @@ public class GameManager : MonoBehaviour
     // Pause the simon mini-game
     private void PauseSimon()
     {
+        if (remainingCluesVisiblity == 0) return;
+
+        remainingCluesVisiblity -= 1;
+        UIManager.Instance.SetCluesInfosText(remainingCluesVisiblity);
+
+        if (remainingCluesVisiblity == 0) GloveInputsManager.OnEightCombination -= (bool _isActive) => { if (_isActive) PauseSimon(); };
+
         isSimonOnPause = true;
         UIManager.Instance.ShowClues();
+        GuitardHeroGM.Instance.Pause(true);
     }
 
     // Called when failed a note in the simon mini-game
@@ -217,6 +227,8 @@ public class GameManager : MonoBehaviour
     // Set a new note for the simon mini-game
     private IEnumerator SimonNewNote()
     {
+        while (isSimonOnPause) yield return null;
+
         UIManager.Instance.UpdateSimonScore(simonSuccededNotes);
         yield return new WaitForSeconds(2);
         GuitardHeroGM.Instance.SetNote();
@@ -252,6 +264,10 @@ public class GameManager : MonoBehaviour
     {
         UIManager.Instance.OnShowCluesEnd -= StartSimon;
         UIManager.Instance.OnShowCluesEnd += () => isSimonOnPause = false;
+        UIManager.Instance.OnShowCluesEnd += () => GuitardHeroGM.Instance.Pause(false);
+        GloveInputsManager.OnEightCombination += (bool _isActive) => { if (_isActive) PauseSimon(); };
+
+        UIManager.Instance.SetCluesInfosText(remainingCluesVisiblity);
 
         simonTimerCoroutine = StartCoroutine(SimonPeggTimer());
     }

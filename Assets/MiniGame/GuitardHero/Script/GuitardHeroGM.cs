@@ -9,6 +9,7 @@ public class GuitardHeroGM : MonoBehaviour
     public event Action OnSuccessMiniGame = null;
 
     public KeyTone[] _note;
+    KeyTone lastActivated = null;
 
 
     public int gmTime = 30;
@@ -72,8 +73,14 @@ public class GuitardHeroGM : MonoBehaviour
     public int SetNote()
     {
         int _id = Reroll();
-        _note[_id].Active(true);
+        lastActivated = _note[_id];
+        lastActivated.Active(true);
 
         return _id;
+    }
+
+    public void Pause(bool _doPause)
+    {
+        if (lastActivated) lastActivated.Active(!lastActivated);
     }
 }

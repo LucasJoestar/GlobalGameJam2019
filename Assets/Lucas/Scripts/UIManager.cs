@@ -33,9 +33,11 @@ public class UIManager : MonoBehaviour
     [Header("Int")]
     [SerializeField] private int cluesTimerLimit = 10;
 
-    [Header("Input Field")]
+    [Header("Field")]
     [SerializeField] private TMP_InputField solutionInputField = null;
     public TMP_InputField SolutionInputField { get { return solutionInputField; } }
+
+    [SerializeField] private TextMeshProUGUI cluesInfosText = null;
     #endregion
 
     #region Singleton
@@ -61,6 +63,19 @@ public class UIManager : MonoBehaviour
     public void ActiveTimer(bool _doActive)
     {
         timerAnchor.SetActive(_doActive);
+    }
+
+    /// <summary>
+    /// Updates the remaining clues text infos.
+    /// </summary>
+    /// <param name="_remainingClues">Amount of remaining clues.</param>
+    public void SetCluesInfosText(int _remainingClues)
+    {
+        if (_remainingClues == 0) cluesInfosText.gameObject.SetActive(false);
+        else
+        {
+            cluesInfosText.text = string.Format(cluesInfosText.text, _remainingClues.ToString());
+        }
     }
 
     // Clues system
@@ -161,7 +176,7 @@ public class UIManager : MonoBehaviour
     private void Awake()
     {
         // Check needed componetns & destroy this if missing one
-        if (!cluesAnchor || !timerAnchor || !cluesImage || !timerImage || !canvas || !solutionInputField)
+        if (!cluesInfosText || !cluesAnchor || !timerAnchor || !cluesImage || !timerImage || !canvas || !solutionInputField)
         {
             Debug.Log("Missing UI reference !");
             Destroy(this);

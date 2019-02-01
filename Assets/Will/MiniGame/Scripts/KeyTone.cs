@@ -20,7 +20,7 @@ public class KeyTone : MonoBehaviour
     #region Check
     void CheckInputNeeded()
     {
-        if (inputValue != 0 && !justeOneTone)
+        if (inputValue != 0 && !justeOneTone && isTimerActive)
         {
             //Debug.Log(name);
             //Debug.Log(inputValue);
@@ -31,7 +31,7 @@ public class KeyTone : MonoBehaviour
             }
             else
             {
-                //Debug.Log("false");
+                Debug.Log("false 1");
                 Instance.FailNote();
             }
             timerStart = false;
@@ -74,8 +74,14 @@ public class KeyTone : MonoBehaviour
     #endregion
     public void Active(bool _doActive)
     {
-        gameObject.SetActive(_doActive);
         isTimerActive = _doActive;
+
+        StartTimer();
+
+        gameObject.SetActive(_doActive);
+
+        inputValue = 0;
+
     }
     public void StartTimer()
     {
@@ -114,6 +120,8 @@ public class KeyTone : MonoBehaviour
     }
     private void Update()
     {
+        if (!isTimerActive) return;
+
         CheckInputNeeded();
         //Timer
         if (!timerStart)
@@ -125,7 +133,7 @@ public class KeyTone : MonoBehaviour
         {
             if (Time.time > timeIsUp)
             {
-                //Debug.Log("false");
+                Debug.Log("false 2");
                 Instance.FailNote();
                 inputValue = 0;
                 timerStart = false;
