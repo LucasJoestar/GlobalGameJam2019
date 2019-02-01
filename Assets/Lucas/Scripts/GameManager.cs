@@ -1,388 +1,231 @@
-﻿using System;
-using System.Collections; 
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using Random = UnityEngine.Random;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
-    #region Events
-    public event Action<float> OnTimerUpdate = null;
-    public event Action<float, float> OnEventTimerUpdate = null;
-
-    public event Action OnEventStart = null;
-    public event Action OnEventEnd = null;
-
-    public event Action OnEventFail = null;
-    public event Action OnEventSuccess = null;
-
-    public event Action OnEventWin = null;
-    public event Action OnEventLoose = null;
-
-    public event Action<bool> OnGameEnd = null;
-    #endregion
-
     #region Fields / Properties
-    [Header("Solution")]
-    [SerializeField] private string solution = "5";
+    [Header("Solution Code")]
+    [SerializeField] private string solutionCode = "5";
+    public string SolutionCode { get { return solutionCode ; } }
 
-    [Header("Doors Riddle")]
-    [SerializeField] private GameObject doorsRiddleAnchor = null;
-    [SerializeField] private GameObject doorsRidleSign = null;
-    [SerializeField] private Animator doorsRidleAnim = null;
-
-    [Header("Bath Riddle")]
-    [SerializeField] private GameObject bathRiddleAnchor = null;
-    [SerializeField] private GameObject bathRiddleSign = null;
-    [SerializeField] private Animator bathRiddleAnim = null;
+    [Header("Help Resources")]
+    // Remaining chances to find the game solution
+    [SerializeField] private int remainingChances = 1;
+    // Remaining chances to see the glove movements clues
+    [SerializeField] private int remainingCluesVisiblity = 1;
 
     [Header ("KeyGlyph State")]
-    [SerializeField]
-     GameObject KeyGlyphAnchor = null;
-    [SerializeField]
-    Animator keyGlyphAnimator = null;
+    [SerializeField] private GameObject KeyGlyphAnchor = null;
+    [SerializeField] private Animator keyGlyphAnimator = null;
 
-    [Header("State")]
-    [SerializeField] private bool isEventActive = false;
-    [SerializeField] private bool isGameOver = false;
-    [SerializeField] private bool isAtDoorsRiddle = false;
-    [SerializeField] private bool isAtBathRiddle = false;
-    [SerializeField] private bool isResolvingDoorsRiddle = false;
-    [SerializeField] private bool isResolvingBathRiddle = false;
+    [Header("Simon")]
+    // Indicates if the simon is on paused or not
+    [SerializeField] private bool isSimonOnPause = false;
+    // Amount of succeeded notes in a row for the simon mini-game
+    [SerializeField] private int simonSuccededNotes = 0;
+    // Simon mini-game combo length, the amount of combinations in a row must be succeded to win it
+    [SerializeField] private int simonComboLength = 5;
+    // Simon mini-game timer length
+    [SerializeField] private int simonTimerLimit = 200;
 
-    [Header("Time")]
-    [SerializeField] private float timer = 0;
-    public float Timer
-    {
-        get { return timer; }
-        set
-        {
-            value = Mathf.Clamp(value, 0, timeLimit);
-            timer = value;
+    // Stored coroutines
+    private Coroutine simonTimerCoroutine = null;
 
-            UIManager.Instance?.UpdateTimer(1 - (value / timeLimit));
-
-            if (value == timeLimit)
-            {
-                EndGame(false);
-            }
-        }
-    }
-    [SerializeField] private int timeLimit = 300;
-    public int TimeLimit { get { return timeLimit; } }
-
-    [SerializeField] private float eventTimer = 0;
-    public float EventTimer
-    {
-        get { return eventTimer; }
-        set
-        {
-            value = Mathf.Clamp(value, 0, eventTimeLimit);
-            eventTimer = value;
-
-            UIManager.Instance?.UpdateEventTimer(value, eventTimeLimit);
-
-            if (value == eventTimeLimit)
-            {
-                EndEvent(false);
-            }
-        }
-    }
-    [SerializeField] private float eventTimeLimit = 20;
-    public float EventTimeLimit { get { return eventTimeLimit; } }
-
-    [SerializeField] private float eventInterval = 15;
-    [SerializeField] private float eventIntervalTimer = 0;
-    public float EventIntervalTimer
-    {
-        get { return eventIntervalTimer; }
-        set
-        {
-            value = Mathf.Clamp(value, 0, eventInterval);
-            eventIntervalTimer = value;
-        }
-    }
-
-    [SerializeField] private float bathRiddleStartTime = 150;
+    [Header("Events")]
+    public UnityEvent OnDoorsPhaseEnd = new UnityEvent();
+    public UnityEvent OnSimonPhaseEnd = new UnityEvent();
+    public UnityEvent OnLightOn = new UnityEvent();
+    public UnityEvent OnSinkOutlet = new UnityEvent();
     #endregion
 
     #region Singleton
+    // Singleton instance
     public static GameManager Instance = null;
     #endregion
 
     #region Methods
 
     #region Original Methods
-    /// <summary>
-    /// Checks the bath riddle
-    /// </summary>
-    private void BathRiddle(bool _doInput)
+
+    #region End Game
+    // Ends the game. You loose, body.
+    private IEnumerator GameOver()
     {
-        if (!_doInput || !isAtBathRiddle || isResolvingBathRiddle) return;
+        UIManager.Instance.BadFeedback();
 
-        isResolvingBathRiddle = true;
+        yield return new WaitForSeconds(2);
 
-        bathRiddleSign.gameObject.SetActive(false);
-        bathRiddleAnim.SetTrigger("Play");
+        MenuManager.LoadBadEnd();
     }
 
-    /// <summary>
-    /// Resolves the bath riddle
-    /// </summary>
-    public void BathRiddleResolve()
+    // Ends the game, and you've won, body.
+    private IEnumerator WinGame()
     {
-        isResolvingBathRiddle = false;
-        isAtBathRiddle = false;
-        Destroy(bathRiddleAnchor.gameObject);
+        UIManager.Instance.GoodFeedback();
+
+        yield return new WaitForSeconds(2);
+
+        MenuManager.LoadGoodEnd();
     }
+    #endregion
 
-    /// <summary>
-    /// Starts the bath riddle
-    /// </summary>
-    public void BathRiddleStart()
+    #region Game Phases
+    // Manages the game phase in the bathroom
+    private IEnumerator BathroomPhase()
     {
-        isAtBathRiddle = true;
-        bathRiddleAnchor.SetActive(true);
-        SoundManager.Instance.PlayBathAmbiance();
-    }
-
-    /// <summary>
-    /// Checks the entered solution by the players
-    /// </summary>
-    /// <param name="_solution"></param>
-    private void CheckSolution(string _solution)
-    {
-        Debug.Log("Solution => " + _solution);
-
-        if (solution == _solution)
+        while (!GloveInputsManager.Instance.FifthCombination)
         {
-            EndGame(true);
-        }
-        else
-        {
-            Timer += 100;
-            UIManager.Instance.EventFail();
-        }
-    }
-
-    /// <summary>
-    /// Checks the doors riddle
-    /// </summary>
-    private void DoorsRiddle(bool _doInput)
-    {
-        if (!_doInput || !isAtDoorsRiddle || isResolvingDoorsRiddle) return;
-
-        isResolvingDoorsRiddle = true;
-
-        doorsRidleSign.gameObject.SetActive(false);
-        doorsRidleAnim.SetTrigger("Play");
-
-        SoundManager.Instance.PlaySuccessFeedback();
-    }
-
-    /// <summary>
-    /// Resolves the doors riddle
-    /// </summary>
-    public void DoorsRiddleResolve()
-    {
-        isResolvingDoorsRiddle = false;
-        isAtDoorsRiddle = false;
-        Destroy(KeyGlyphAnchor.gameObject);
-
-        SoundManager.Instance.PlayMonsterNoise();
-        UIManager.Instance.ActiveTimer();
-    }
-
-    /// <summary>
-    /// Make an end to an event
-    /// </summary>
-    /// <param name="_isSuccess"></param>
-    public void EndEvent(bool _isSuccess)
-    {
-        isEventActive = false;
-
-        if (_isSuccess)
-        {
-            SuccessEvent();
-            OnEventWin?.Invoke();
-        }
-        else
-        {
-            //FailEvent();
-            OnEventLoose?.Invoke();
+            yield return null;
         }
 
-        OnEventEnd?.Invoke();
-    }
+        OnLightOn?.Invoke();
 
-    /// <summary>
-    /// Clled when an event part has been failed
-    /// </summary>
-    private void FailEvent()
-    {
-        EventTimer += 20;
-        OnEventFail?.Invoke();
-    }
-
-    /// <summary>
-    /// Ends the game
-    /// </summary>
-    /// <param name="_isSuccess"></param>
-    public void EndGame(bool _isSuccess)
-    {
-        isGameOver = true;
-
-        OnGameEnd?.Invoke(_isSuccess);
-
-        if (_isSuccess)
+        while (!GloveInputsManager.Instance.FifthCombination)
         {
-            Invoke("LoadGoodEnd", 2);
-            UIManager.Instance.EventSuccess();
+            yield return null;
         }
-        else
+
+        OnSinkOutlet?.Invoke();
+    }
+
+    // Manages the phase when players have to open the doors
+    private IEnumerator DoorsPhase()
+    {
+        while (!GloveInputsManager.Instance.FifthCombination)
         {
-            UIManager.Instance.EventFail();
-            Invoke("LoadBadEnd", 2);
+            yield return null;
         }
+
+        OnDoorsPhaseEnd?.Invoke();
     }
 
-    public void KeyGlyphStage()
+    #region Simon
+    // Ends the simon phase
+    private IEnumerator EndSimon()
     {
-        Destroy(doorsRiddleAnchor.gameObject);
-        KeyGlyphAnchor.SetActive(true);
-        keyGlyphAnimator.SetTrigger("Play");
+        // Stop timer coroutine if needed
+        if (simonTimerCoroutine != null) StopCoroutine(simonTimerCoroutine);
+        UIManager.Instance.ActiveTimer(false);
+
+        yield return new WaitForSeconds(2);
+
+        // Active the bath phase
+        StartCoroutine(BathroomPhase());
+
+        // Triggers event
+        OnSimonPhaseEnd?.Invoke();
     }
 
-    private void LoadBadEnd()
+    // Pause the simon mini-game
+    private void PauseSimon()
     {
-        SceneManager.LoadScene(2);
+        isSimonOnPause = true;
+        UIManager.Instance.ShowClues();
     }
 
-    private void LoadGoodEnd()
+    // Called when failed a note in the simon mini-game
+    private void SimonFailNote()
     {
-        SceneManager.LoadScene(3);
+        simonSuccededNotes = 0;
+        UIManager.Instance.BadFeedback();
+
+        StartCoroutine(SimonNewNote());
     }
 
-    /// <summary>
-    /// Starts a random event
-    /// </summary>
-    private void StartEvent()
+    // Set a new note for the simon mini-game
+    private IEnumerator SimonNewNote()
     {
-        EventIntervalTimer = 0;
-        eventTimeLimit = 4;//////
-        StartCoroutine(StartEventTimer()); 
-        //eventTimer = 0;
-        isEventActive = true;
-        OnEventStart?.Invoke();
+        UIManager.Instance.UpdateSimonScore(simonSuccededNotes);
+        yield return new WaitForSeconds(2);
         GuitardHeroGM.Instance.SetNote();
     }
 
-    /// <summary>
-    /// Called when an event part is successfully achieved
-    /// </summary>
-    private void SuccessEvent()
+    // Manages the Simon mini-game timer
+    private IEnumerator SimonPeggTimer()
     {
-        OnEventSuccess?.Invoke();
-    }
+        // Creates variables
+        float _timer = simonTimerLimit;
 
-    /// <summary>
-    /// Updates all timer of the game
-    /// </summary>
-    private void UpdateTimer()
-    {
-        // Update the global timer
-        Timer += Time.deltaTime;
+        // Set the first note of the simon
+        StartCoroutine(SimonNewNote());
 
-        if (timer >= timeLimit)
+        // Do the simon while not succeded enough notes in a row
+        while (_timer > 0)
         {
-            EndGame(false);
-            return;
-        }
+            yield return new WaitForEndOfFrame();
 
-        if (timer > bathRiddleStartTime && !isAtBathRiddle && bathRiddleAnchor != null)
-        {
-            BathRiddleStart();
-            return;
-        }
-
-        if (!isAtBathRiddle && !isAtDoorsRiddle)
-        {
-            EventIntervalTimer += Time.deltaTime;
-            if (eventIntervalTimer >= eventInterval)
+            if (!isSimonOnPause)
             {
-                StartEvent();
+                _timer -= Time.deltaTime;
+                UIManager.Instance.UpdateTimer(_timer / simonTimerLimit);
             }
         }
 
-        if (!isEventActive) return;
-        /*
-        // Update the event timer
-        EventTimer += Time.deltaTime;
-
-        if (eventTimer >= eventTimeLimit)
-        {
-            EndEvent(false);
-        }
-        */
+        // This is the end... My only friend, the end
+        StartCoroutine(GameOver());
     }
 
-    private IEnumerator StartEventTimer()
+    // Starts the simon mini-game
+    private void StartSimon()
     {
-        yield return new WaitForSeconds(EventTimeLimit);
-        EndEvent(false);
-        StartCoroutine(StartEventTimer()); 
+        UIManager.Instance.OnShowCluesEnd -= StartSimon;
+        UIManager.Instance.OnShowCluesEnd += () => isSimonOnPause = false;
+
+        simonTimerCoroutine = StartCoroutine(SimonPeggTimer());
     }
+
+    // Called to invoke a new note for the simon mini-game
+    private void SimonSucceedNote()
+    {
+        simonSuccededNotes++;
+        UIManager.Instance.GoodFeedback();
+
+        // If not enough notes succeeded in a row, set another note
+        if (simonSuccededNotes < simonComboLength) StartCoroutine(SimonNewNote());
+        // If note, stop the simon mini-game phase
+        else
+        {
+            StartCoroutine(EndSimon());
+        }
+    }
+    #endregion
+
+    #endregion
+
     #endregion
 
     #region Unity Methods
     private void Awake()
     {
+        // Set the singleton instance of this class as this or destroy self if it already exist
         if (!Instance) Instance = this;
         else
         {
             Destroy(this);
             return;
         }
-
-        GloveInputsManager.OnFifthCombination += DoorsRiddle;
-        InputsManager.OnKBAFiveDownInputPress += DoorsRiddle;
-        InputsManager.OnRightBumperDownInputPress += DoorsRiddle;
-
-        GloveInputsManager.OnSixCombination += (float _value) => BathRiddle(_value > .5f);
-        InputsManager.OnKBASixDownInputPress += BathRiddle;
-        InputsManager.OnLeftBumperDownInputPress += BathRiddle;
-    }
-
-    private void FixedUpdate()
-    {
-        if (!isGameOver && !isAtDoorsRiddle) UpdateTimer();
     }
 
     private void OnDestroy()
     {
+        // Nullify the singleton instance if it is this
         if (Instance == this) Instance = null;
     }
 
     // Use this for initialization
     void Start ()
     {
-        if (!UIManager.Instance)
-        {
-            Debug.Log("UIManager missing !");
-        }
-        else
-        {
-            // Check the solution when entering it into the input field
-            UIManager.Instance.SolutionInputField.onEndEdit.AddListener(CheckSolution);
-        }
-        //GuitardHeroGM.OnFailMiniGame += FailEvent;
-        //currentEvent.OnSuccessMiniGame += SuccessEvent;
-        //currentEvent.OnWinMiniGame += () => EndEvent(true);
+        // Set events
+        UIManager.Instance.OnGoodSolutionFound += () => StartCoroutine(WinGame());
+        UIManager.Instance.OnShowCluesEnd += StartSimon;
 
-        GuitardHeroGM.Instance.OnFailMiniGame += () => EndEvent(false);
-        GuitardHeroGM.Instance.OnSuccessMiniGame += () => EndEvent(true);
-        isAtDoorsRiddle = true;
+        // Set events for the simon mini-game
+        GuitardHeroGM.Instance.OnFailMiniGame += SimonFailNote;
+        GuitardHeroGM.Instance.OnSuccessMiniGame += SimonSucceedNote;
+
+        // Starts the doors phase
+        StartCoroutine(DoorsPhase());
     }
 	
 	// Update is called once per frame
