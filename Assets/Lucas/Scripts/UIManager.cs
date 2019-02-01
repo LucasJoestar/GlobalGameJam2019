@@ -8,9 +8,9 @@ public class UIManager : MonoBehaviour
 {
     #region Events
     /// <summary>
-    /// Event called when the players have found the good solution of the game
+    /// Event called when the players have tried the found the good solution of the game
     /// </summary>
-    public event Action OnGoodSolutionFound = null;
+    public event Action<bool> OnSolutionCheck = null;
 
     /// <summary>
     /// Event called when the clues stop being displayed
@@ -46,9 +46,18 @@ public class UIManager : MonoBehaviour
 
     #region Original Methods
     /// <summary>
+    /// (Des)active the solution field visibility
+    /// </summary>
+    /// <param name="_doActive">Should this be active or not ?</param>
+    public void ActiveSolutionField(bool _doActive)
+    {
+        solutionInputField.gameObject.SetActive(_doActive);
+    }
+
+    /// <summary>
     /// (Des)active the timer visibility
     /// </summary>
-    /// <param name="_doActive"></param>
+    /// <param name="_doActive">Should this be active or not ?</param>
     public void ActiveTimer(bool _doActive)
     {
         timerAnchor.SetActive(_doActive);
@@ -78,20 +87,23 @@ public class UIManager : MonoBehaviour
     /// <param name="_solution"></param>
     private void OnEnterSolution(string _solution)
     {
+        // Get if players succeeded or not
+        bool _isSucceeded = _solution == GameManager.Instance.SolutionCode;
+
         // If it was the good solution, then triggers the end of the game
-        if (_solution == GameManager.Instance.SolutionCode)
+        if (_isSucceeded)
         {
             // Good feedback
             solutionInputField.gameObject.SetActive(false);
-
-            // Triggers the associated event
-            OnGoodSolutionFound?.Invoke();
         }
         else
         {
             // Bad feedback
             solutionInputField.text = string.Empty;
         }
+
+        // Triggers the associated event
+        OnSolutionCheck?.Invoke(_isSucceeded);
     }
 
     // Shows movement signs clues

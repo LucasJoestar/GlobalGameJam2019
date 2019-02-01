@@ -3995,8 +3995,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2143970024}
   - component: {fileID: 2143970023}
-  - component: {fileID: 2143970021}
   - component: {fileID: 2143970026}
+  - component: {fileID: 2143970021}
   - component: {fileID: 2143970025}
   m_Layer: 0
   m_Name: Managers
@@ -4013,29 +4013,40 @@ MonoBehaviour:
   m_GameObject: {fileID: 2143970020}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de8110ca72a90994dab2e7334846babd, type: 3}
+  m_Script: {fileID: 11500000, guid: 97f4a95803cfa7d4b9d560e575a7f5c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioSource: {fileID: 581194055}
-  mainTheme: {fileID: 8300000, guid: 99e9af21957496044a36e7da648c352d, type: 3}
-  miniGameTheme: {fileID: 8300000, guid: c0cfccfbcf94e574d944d70cdc08d606, type: 3}
-  bathAmbiance: {fileID: 8300000, guid: 7544ab0286a951b40b8e956eaff9e1a5, type: 3}
-  bathResolve: {fileID: 8300000, guid: 4dd665edcfb3e5942adea8f32b498788, type: 3}
-  failFeedback: {fileID: 8300000, guid: eb1c02fa6998e854c8e7cbac1b5510d6, type: 3}
-  successFeedback: {fileID: 8300000, guid: 6b04af5a6ac81714690965fe34ac2956, type: 3}
-  clues:
-  - {fileID: 8300000, guid: c577f782b30812449b1b8618130e0531, type: 3}
-  - {fileID: 8300000, guid: 95ef8e4fa66627644b0386aaf38e9ae0, type: 3}
-  - {fileID: 8300000, guid: c87ca1b62d762334a8871a1432ac1b72, type: 3}
-  - {fileID: 8300000, guid: 9619586460c04134a9cce859d618db3c, type: 3}
-  - {fileID: 8300000, guid: c2453f52f83611c44a13047c8c60b2a6, type: 3}
-  - {fileID: 8300000, guid: a29a0234456df2c4cb91da0cd457cd25, type: 3}
-  - {fileID: 8300000, guid: 538da9936bc891b4b8986df8e6b8a447, type: 3}
-  - {fileID: 8300000, guid: 6d074963ece3b78448116ef21f8d5c5c, type: 3}
-  - {fileID: 8300000, guid: 2f9de8d268c9d184fa3966e8c02cddef, type: 3}
-  - {fileID: 8300000, guid: 2e8ab20aedfe58c469da58204b94a456, type: 3}
-  monsterNoise: {fileID: 8300000, guid: ce61b33da5a0126479c523edb466410a, type: 3}
-  mainThemeTime: 0
+  sounds:
+  - name: 
+    Clip: {fileID: 0}
+    volume: 0
+    pitch: 0
+    Loop: 0
+    source: {fileID: 0}
+  - name: 
+    Clip: {fileID: 0}
+    volume: 0
+    pitch: 0
+    Loop: 0
+    source: {fileID: 0}
+  - name: 
+    Clip: {fileID: 0}
+    volume: 0
+    pitch: 0
+    Loop: 0
+    source: {fileID: 0}
+  - name: 
+    Clip: {fileID: 0}
+    volume: 0
+    pitch: 0
+    Loop: 0
+    source: {fileID: 0}
+  - name: 
+    Clip: {fileID: 0}
+    volume: 0
+    pitch: 0
+    Loop: 0
+    source: {fileID: 0}
 --- !u!114 &2143970023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4056,14 +4067,53 @@ MonoBehaviour:
   simonSuccededNotes: 0
   simonComboLength: 5
   simonTimerLimit: 200
+  guessWhatOneTimerLimit: 15
   OnDoorsPhaseEnd:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1368868884}
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: PlayDoors
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   OnSimonPhaseEnd:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1930509312}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnGuessWhatOneEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1930509312}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1862948898}
         m_MethodName: SetActive
         m_Mode: 6
@@ -4342,3 +4392,6 @@ MonoBehaviour:
   escape: 0
   escapeDown: 0
   escapeUp: 0
+  space: 0
+  spaceDown: 0
+  spaceUp: 0

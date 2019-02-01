@@ -13,6 +13,7 @@ public class KeyTone : MonoBehaviour
     [SerializeField,Range(1,6)]
     int inputWanted = 1;
     bool justeOneTone = false;
+    bool isTimerActive = false;
     #endregion
 
     #region Methods
@@ -35,7 +36,7 @@ public class KeyTone : MonoBehaviour
             }
             timerStart = false;
             inputValue = 0;
-            gameObject.SetActive(false);
+            Active(false);
         }
     }
     #endregion
@@ -71,6 +72,11 @@ public class KeyTone : MonoBehaviour
         inputValue = 5;
     }
     #endregion
+    public void Active(bool _doActive)
+    {
+        gameObject.SetActive(_doActive);
+        isTimerActive = _doActive;
+    }
     public void StartTimer()
     {
         timeIsUp = Time.time + toneLifeTime;
@@ -115,7 +121,7 @@ public class KeyTone : MonoBehaviour
             timerStart = true;
             StartTimer();
         }
-        else
+        else if (isTimerActive)
         {
             if (Time.time > timeIsUp)
             {

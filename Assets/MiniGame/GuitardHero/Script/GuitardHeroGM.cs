@@ -8,7 +8,7 @@ public class GuitardHeroGM : MonoBehaviour
     public event Action OnFailMiniGame = null;
     public event Action OnSuccessMiniGame = null;
 
-    public GameObject[] _note;
+    public KeyTone[] _note;
 
 
     public int gmTime = 30;
@@ -26,9 +26,9 @@ public class GuitardHeroGM : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        foreach(GameObject _element in _note)
+        foreach(KeyTone _element in _note)
         {
-            _element.SetActive(false);
+            _element.Active(false);
         }
     }
 
@@ -72,7 +72,7 @@ public class GuitardHeroGM : MonoBehaviour
     public int SetNote()
     {
         int _id = Reroll();
-        _note[_id].SetActive(true);
+        _note[_id].Active(true);
 
         return _id;
     }

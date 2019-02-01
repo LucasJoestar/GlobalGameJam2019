@@ -29,12 +29,17 @@ public class GameManager : MonoBehaviour
     // Simon mini-game timer length
     [SerializeField] private int simonTimerLimit = 200;
 
+    [Header("Guess What")]
+    [SerializeField] private int guessWhatOneTimerLimit = 15;
+
     // Stored coroutines
     private Coroutine simonTimerCoroutine = null;
+    private Coroutine guessWhatOneCoroutine = null;
 
     [Header("Events")]
     public UnityEvent OnDoorsPhaseEnd = new UnityEvent();
     public UnityEvent OnSimonPhaseEnd = new UnityEvent();
+    public UnityEvent OnGuessWhatOneEnd = new UnityEvent();
     public UnityEvent OnLightOn = new UnityEvent();
     public UnityEvent OnSinkOutlet = new UnityEvent();
     #endregion
@@ -74,17 +79,27 @@ public class GameManager : MonoBehaviour
     // Manages the game phase in the bathroom
     private IEnumerator BathroomPhase()
     {
-        while (!GloveInputsManager.Instance.FifthCombination)
+        bool _isGood = false;
+        GloveInputsManager.OnSixCombination += (float _isReallyGood) => _isGood = _isReallyGood > .5f;
+
+        while (!_isGood)
         {
             yield return null;
         }
+
+        _isGood = false;
+        GloveInputsManager.OnSixCombination -= (float _isReallyGood) => _isGood = _isReallyGood > .5f;
 
         OnLightOn?.Invoke();
 
-        while (!GloveInputsManager.Instance.FifthCombination)
+        GloveInputsManager.OnSevenCombination += (bool _isReallyGood) => _isGood = _isReallyGood;
+
+        while (!_isGood)
         {
             yield return null;
         }
+
+        GloveInputsManager.OnSevenCombination -= (bool _isReallyGood) => _isGood = _isReallyGood;
 
         OnSinkOutlet?.Invoke();
     }
@@ -92,13 +107,77 @@ public class GameManager : MonoBehaviour
     // Manages the phase when players have to open the doors
     private IEnumerator DoorsPhase()
     {
-        while (!GloveInputsManager.Instance.FifthCombination)
+        bool _isGood = false;
+        GloveInputsManager.OnFifthCombination += (bool _isReallyGood) => _isGood = _isReallyGood;
+
+        while (!_isGood)
         {
             yield return null;
+            Debug.Log("No homo");
         }
+
+        GloveInputsManager.OnFifthCombination -= (bool _isReallyGood) => _isGood = _isReallyGood;
 
         OnDoorsPhaseEnd?.Invoke();
     }
+
+    #region Guess What
+    // When players entered something to guess the solution, executes the associated things
+    private void CheckSolution(bool _isSucceeded)
+    {
+        // If it's the good solution
+        if (_isSucceeded)
+        {
+            UIManager.Instance.ActiveSolutionField(false);
+
+            StartCoroutine(WinGame());
+            UIManager.Instance.OnSolutionCheck -= CheckSolution;
+            return;
+        }
+        else
+        {
+            remainingChances--;
+            // If no more chances remains, game's over
+            if (remainingChances == 0)
+            {
+                UIManager.Instance.ActiveSolutionField(false);
+
+                StartCoroutine(GameOver());
+                UIManager.Instance.OnSolutionCheck -= CheckSolution;
+                return;
+            }
+            // If on guess what one phase, triggers the bath phase
+            else if (guessWhatOneCoroutine != null)
+            {
+                OnGuessWhatOneEnd?.Invoke();
+                StartCoroutine(BathroomPhase());
+            }
+        }
+
+        UIManager.Instance.BadFeedback();
+
+        // Stop coroutine if needed
+        if (guessWhatOneCoroutine != null) StopCoroutine(guessWhatOneCoroutine);
+    }
+
+    // Phase when players have to guess the room where the blind guy is ; #1
+    private IEnumerator GuessWhatOne()
+    {
+        float _gussWhatOneTimer = guessWhatOneTimerLimit;
+
+        while (_gussWhatOneTimer > 0)
+        {
+            yield return null;
+            _gussWhatOneTimer -= Time.deltaTime;
+        }
+
+        // Triggers event
+        OnGuessWhatOneEnd?.Invoke();
+
+        // Starts the bath phase
+        StartCoroutine(BathroomPhase());
+    }
+    #endregion
 
     #region Simon
     // Ends the simon phase
@@ -110,8 +189,8 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(2);
 
-        // Active the bath phase
-        StartCoroutine(BathroomPhase());
+        // Active the guess what one phase
+        guessWhatOneCoroutine = StartCoroutine(GuessWhatOne());
 
         // Triggers event
         OnSimonPhaseEnd?.Invoke();
@@ -127,6 +206,8 @@ public class GameManager : MonoBehaviour
     // Called when failed a note in the simon mini-game
     private void SimonFailNote()
     {
+        Debug.Log("What tiggle what tiggle what tiggle WHAT");
+
         simonSuccededNotes = 0;
         UIManager.Instance.BadFeedback();
 
@@ -217,7 +298,7 @@ public class GameManager : MonoBehaviour
     void Start ()
     {
         // Set events
-        UIManager.Instance.OnGoodSolutionFound += () => StartCoroutine(WinGame());
+        UIManager.Instance.OnSolutionCheck += CheckSolution;
         UIManager.Instance.OnShowCluesEnd += StartSimon;
 
         // Set events for the simon mini-game
