@@ -104,13 +104,15 @@ public class GameManager : MonoBehaviour
         GloveInputsManager.OnSixCombination += (float _isReallyGood) => _isGood = _isReallyGood > .5f;
         // DEBUG
         //InputsManager.OnKBASixDownInputPress += (bool _isReallyGood) => _isGood = _isReallyGood;
+        //Debug.Log("Evier :" + _isGood);
+
 
         while (!_isGood)
         {
             yield return null;
         }
         GloveInputsManager.OnSixCombination -= (float _isReallyGood) => _isGood = _isReallyGood > .5f;
-
+        //Debug.Log("Evier :" + _isGood);
         OnSinkOutlet?.Invoke();
         SoundManager.Instance.PlayBathResolveSound();
         yield return new WaitForSeconds(2);
@@ -237,7 +239,7 @@ public class GameManager : MonoBehaviour
     // Called when failed a note in the simon mini-game
     private void SimonFailNote()
     {
-        Debug.Log("What tiggle what tiggle what tiggle WHAT");
+        //Debug.Log("What tiggle what tiggle what tiggle WHAT");
 
         simonSuccededNotes = 0;
         UIManager.Instance.BadFeedback();

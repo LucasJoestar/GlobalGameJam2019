@@ -31,7 +31,7 @@ public class KeyTone : MonoBehaviour
             }
             else
             {
-                Debug.Log("false 1");
+                //Debug.Log("false 1");
                 Instance.FailNote();
             }
             timerStart = false;
