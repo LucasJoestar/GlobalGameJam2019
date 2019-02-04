@@ -154,6 +154,7 @@ public class UIManager : MonoBehaviour
 
         GameObject _feedback = Instantiate(_failFeedback, canvas.transform, false);
         Destroy(_feedback, 1);
+        SoundManager.Instance.PlayFailFeedback();
     }
 
     /// <summary>
@@ -167,6 +168,7 @@ public class UIManager : MonoBehaviour
 
         GameObject _feedback = Instantiate(_successFeedback, canvas.transform, false);
         Destroy(_feedback, 1);
+        SoundManager.Instance.PlaySuccessFeedback();
     }
     #endregion
 

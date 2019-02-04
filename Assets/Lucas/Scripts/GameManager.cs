@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     public UnityEvent OnGuessWhatOneEnd = new UnityEvent();
     public UnityEvent OnLightOn = new UnityEvent();
     public UnityEvent OnSinkOutlet = new UnityEvent();
+    public UnityEvent OnEnd = new UnityEvent();
     #endregion
 
     #region Singleton
@@ -58,6 +59,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator GameOver()
     {
         UIManager.Instance.BadFeedback();
+        SoundManager.Instance.PlayMonsterNoise();
 
         yield return new WaitForSeconds(2);
 
@@ -79,8 +81,13 @@ public class GameManager : MonoBehaviour
     // Manages the game phase in the bathroom
     private IEnumerator BathroomPhase()
     {
+        SoundManager.Instance.PlayBathAmbiance();
+
         bool _isGood = false;
         GloveInputsManager.OnSevenCombination += (bool _isReallyGood) => _isGood = _isReallyGood;
+
+        // DEBUG
+        //InputsManager.OnKBAFourDownInputPress += (bool _isReallyGood) => _isGood = _isReallyGood;
 
         while (!_isGood)
         {
@@ -92,8 +99,11 @@ public class GameManager : MonoBehaviour
         GloveInputsManager.OnSevenCombination -= (bool _isReallyGood) => _isGood = _isReallyGood;
 
         OnLightOn?.Invoke();
+        yield return new WaitForSeconds(1.5f);
 
         GloveInputsManager.OnSixCombination += (float _isReallyGood) => _isGood = _isReallyGood > .5f;
+        // DEBUG
+        //InputsManager.OnKBASixDownInputPress += (bool _isReallyGood) => _isGood = _isReallyGood;
 
         while (!_isGood)
         {
@@ -103,6 +113,11 @@ public class GameManager : MonoBehaviour
         GloveInputsManager.OnSixCombination -= (float _isReallyGood) => _isGood = _isReallyGood > .5f;
 
         OnSinkOutlet?.Invoke();
+        SoundManager.Instance.PlayBathResolveSound();
+        yield return new WaitForSeconds(2);
+        OnEnd?.Invoke();
+
+        SoundManager.Instance.PlayMainTheme();
     }
 
     // Manages the phase when players have to open the doors
@@ -110,6 +125,9 @@ public class GameManager : MonoBehaviour
     {
         bool _isGood = false;
         GloveInputsManager.OnFifthCombination += (bool _isReallyGood) => _isGood = _isReallyGood;
+
+        // DEBUG
+        //InputsManager.OnKBAFiveDownInputPress += (bool _isReallyGood) => _isGood = _isReallyGood;
 
         while (!_isGood)
         {
@@ -119,6 +137,7 @@ public class GameManager : MonoBehaviour
         GloveInputsManager.OnFifthCombination -= (bool _isReallyGood) => _isGood = _isReallyGood;
 
         OnDoorsPhaseEnd?.Invoke();
+        SoundManager.Instance.PlayMonsterNoise();
     }
 
     #region Guess What
@@ -132,7 +151,6 @@ public class GameManager : MonoBehaviour
 
             StartCoroutine(WinGame());
             UIManager.Instance.OnSolutionCheck -= CheckSolution;
-            return;
         }
         else
         {
@@ -144,17 +162,18 @@ public class GameManager : MonoBehaviour
 
                 StartCoroutine(GameOver());
                 UIManager.Instance.OnSolutionCheck -= CheckSolution;
-                return;
             }
             // If on guess what one phase, triggers the bath phase
             else if (guessWhatOneCoroutine != null)
             {
-                OnGuessWhatOneEnd?.Invoke();
+                UIManager.Instance.BadFeedback();
+
+                OnGuessWhatOneEnd.Invoke();
+
                 StartCoroutine(BathroomPhase());
             }
+            else UIManager.Instance.BadFeedback();
         }
-
-        UIManager.Instance.BadFeedback();
 
         // Stop coroutine if needed
         if (guessWhatOneCoroutine != null) StopCoroutine(guessWhatOneCoroutine);
@@ -163,16 +182,18 @@ public class GameManager : MonoBehaviour
     // Phase when players have to guess the room where the blind guy is ; #1
     private IEnumerator GuessWhatOne()
     {
-        float _gussWhatOneTimer = guessWhatOneTimerLimit;
+        SoundManager.Instance.PlayMainTheme();
 
-        while (_gussWhatOneTimer > 0)
+        float _guessWhatOneTimer = guessWhatOneTimerLimit;
+
+        while (_guessWhatOneTimer > 0)
         {
-            yield return null;
-            _gussWhatOneTimer -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+            _guessWhatOneTimer -= Time.deltaTime;
         }
 
         // Triggers event
-        OnGuessWhatOneEnd?.Invoke();
+        OnGuessWhatOneEnd.Invoke();
 
         // Starts the bath phase
         StartCoroutine(BathroomPhase());
@@ -183,9 +204,10 @@ public class GameManager : MonoBehaviour
     // Ends the simon phase
     private IEnumerator EndSimon()
     {
+        UIManager.Instance.ActiveTimer(false);
+
         // Stop timer coroutine if needed
         if (simonTimerCoroutine != null) StopCoroutine(simonTimerCoroutine);
-        UIManager.Instance.ActiveTimer(false);
 
         if (remainingCluesVisiblity == 0) GloveInputsManager.OnEightCombination -= (bool _isActive) => { if (_isActive) PauseSimon(); };
 
@@ -195,7 +217,7 @@ public class GameManager : MonoBehaviour
         guessWhatOneCoroutine = StartCoroutine(GuessWhatOne());
 
         // Triggers event
-        OnSimonPhaseEnd?.Invoke();
+        OnSimonPhaseEnd.Invoke();
     }
 
     // Pause the simon mini-game
@@ -262,6 +284,7 @@ public class GameManager : MonoBehaviour
     // Starts the simon mini-game
     private void StartSimon()
     {
+        SoundManager.Instance.PlayMiniGameMusic();
         UIManager.Instance.OnShowCluesEnd -= StartSimon;
         UIManager.Instance.OnShowCluesEnd += () => isSimonOnPause = false;
         UIManager.Instance.OnShowCluesEnd += () => GuitardHeroGM.Instance.Pause(false);
@@ -277,6 +300,7 @@ public class GameManager : MonoBehaviour
     {
         simonSuccededNotes++;
         UIManager.Instance.GoodFeedback();
+        SoundManager.Instance.PlayRandomClue();
 
         // If not enough notes succeeded in a row, set another note
         if (simonSuccededNotes < simonComboLength) StartCoroutine(SimonNewNote());
@@ -328,7 +352,6 @@ public class GameManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-		
 	}
     #endregion
 
