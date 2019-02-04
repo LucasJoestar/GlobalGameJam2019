@@ -31,6 +31,11 @@ public class MenuManager : MonoBehaviour
     {
         Application.Quit();
     }
+    public void Quit(bool _doIt)
+    {
+        if (!_doIt) return;
+        Application.Quit();
+    }
 
     /// <summary>
     /// Starts the game.
@@ -38,5 +43,9 @@ public class MenuManager : MonoBehaviour
     public void StartGame()
     {
         SceneManager.LoadScene(1);
+    }
+    private void Awake()
+    {
+        InputsManager.OnEscapeClickDownInputPress += Quit;
     }
 }

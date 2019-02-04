@@ -109,7 +109,6 @@ public class GameManager : MonoBehaviour
         {
             yield return null;
         }
-
         GloveInputsManager.OnSixCombination -= (float _isReallyGood) => _isGood = _isReallyGood > .5f;
 
         OnSinkOutlet?.Invoke();
