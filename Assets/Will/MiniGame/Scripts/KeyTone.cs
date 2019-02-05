@@ -4,37 +4,36 @@ public class KeyTone : MonoBehaviour
 {
     #region F/P
     GuitardHeroGM Instance;
+    #region Inputs
     [SerializeField]
     int inputValue = 0;
-    [SerializeField]
-    float toneLifeTime = 7;
-    float timeIsUp;
-    bool timerStart = false;
-    [SerializeField,Range(1,6)]
+    [SerializeField, Range(1, 6)]
     int inputWanted = 1;
-    bool justeOneTone = false;
+    #endregion
+    #region Timer    
+    bool canjusteOneTone = false;
     bool isTimerActive = false;
+    bool canStartTimer = false;
+    float timeIsUp;
+    float toneLifeTime = 7;    
+    #endregion
     #endregion
 
     #region Methods
     #region Check
     void CheckInputNeeded()
     {
-        if (inputValue != 0 && !justeOneTone && isTimerActive)
+        if (inputValue != 0 && !canjusteOneTone && isTimerActive)
         {
-            //Debug.Log(name);
-            //Debug.Log(inputValue);
             if (inputWanted == inputValue)
             {
-                //Debug.Log("true");
                 Instance.SucessNote();
             }
             else
             {
-                //Debug.Log("false 1");
                 Instance.FailNote();
             }
-            timerStart = false;
+            canStartTimer = false;
             inputValue = 0;
             Active(false);
         }
@@ -44,41 +43,36 @@ public class KeyTone : MonoBehaviour
     void FirstInput(bool _doIt)
     {
         if (!_doIt) return;
-        //Debug.Log("Input 1");
         inputValue = 1;
     }
     void SecondInput(bool _doIt)
     {
         if (!_doIt) return;
-        //Debug.Log("Input 2");
         inputValue = 2;
     }
     void ThirdInput(bool _doIt)
     {
         if (!_doIt) return;
-        //Debug.Log("Input 3");
         inputValue = 3;
     }
     void FourthInput(bool _doIt)
     {
         if (!_doIt) return;
-        //Debug.Log("Input 4");
         inputValue = 4;
     }
     void FifthInput(bool _doIt)
     {
         if (!_doIt) return;
-        //Debug.Log("Input 5");
         inputValue = 5;
     }
     #endregion
-    public void Active(bool _doActive)
+    public void Active(bool _isActive)
     {
-        isTimerActive = _doActive;
+        isTimerActive = _isActive;
 
         StartTimer();
 
-        gameObject.SetActive(_doActive);
+        gameObject.SetActive(_isActive);
 
         inputValue = 0;
 
@@ -121,12 +115,11 @@ public class KeyTone : MonoBehaviour
     private void Update()
     {
         if (!isTimerActive) return;
-
         CheckInputNeeded();
-        //Timer
-        if (!timerStart)
+        #region Timer
+        if (!canStartTimer)
         {
-            timerStart = true;
+            canStartTimer = true;
             StartTimer();
         }
         else if (isTimerActive)
@@ -136,10 +129,11 @@ public class KeyTone : MonoBehaviour
                 Debug.Log("false 2");
                 Instance.FailNote();
                 inputValue = 0;
-                timerStart = false;
+                canStartTimer = false;
                 gameObject.SetActive(false);
             }
         }
+        #endregion
     }
     #endregion
 }

@@ -56,6 +56,14 @@ public class Debuger : MonoBehaviour
         
     }
 
+    void InputEight(bool _doIt)
+    {
+        if (!_doIt) return;
+        Debug.Log("Input eight");
+        gameObjetToChange.GetComponent<Renderer>().material.color = Color.white;
+
+    }
+
     void LeaveGame( )
     {
         Application.Quit();
@@ -70,7 +78,9 @@ public class Debuger : MonoBehaviour
         GloveInputsManager.OnFourthCombination += InputFourth;
         GloveInputsManager.OnFifthCombination += InputFifth;
         GloveInputsManager.OnSixCombination += InputSix;
-        GloveInputsManager.OnSevenCombination += InputSeven; 
+        GloveInputsManager.OnSevenCombination += InputSeven;
+        GloveInputsManager.OnEightCombination += InputEight;
+
 
         #endregion
         #region XboxController
